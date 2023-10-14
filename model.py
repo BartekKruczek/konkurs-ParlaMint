@@ -15,10 +15,10 @@ def get_emotion(text):
     return label
 
 
-print(
-    get_emotion(
-        "i feel as if i havent blogged in ages are at least truly blogged i am doing an update cute"
-    )
-)  # Output: 'joy'
+# print(
+#     get_emotion(
+#         "i feel as if i havent blogged in ages are at least truly blogged i am doing an update cute"
+#     )
+# )
 
-print(get_emotion("i have a feeling i kinda lost my best friend"))  # Output: 'sadness'
+# print(get_emotion("i have a feeling i kinda lost my best friend"))
