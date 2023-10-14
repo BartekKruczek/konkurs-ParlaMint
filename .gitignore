@@ -6,4 +6,5 @@ ParlaMint-PL.TEI/
 ParlaMint-PL.txt/
 ParlaMint-PL.vert/
 ParlaMint-PL.TEI.ana/
+__pycache__/
 ```
