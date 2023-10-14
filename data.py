@@ -6,5 +6,5 @@ class Reading_files:
         return "Klasa do odczytu plików"
 
     def read_file(self):
-        with open(self.path, "r") as f:
+        with open(self.path, "r", encoding="utf-8") as f:
             return f.read()
