@@ -1,11 +1,24 @@
-from speechbrain.pretrained.interfaces import foreign_class
+from transformers import AutoTokenizer, AutoModelWithLMHead
 
-classifier = foreign_class(
-    source="speechbrain/emotion-recognition-wav2vec2-IEMOCAP",
-    pymodule_file="custom_interface.py",
-    classname="CustomEncoderWav2vec2Classifier",
-)
-out_prob, score, index, text_lab = classifier.classify_file(
-    "speechbrain/emotion-recognition-wav2vec2-IEMOCAP/anger.wav"
-)
-print(text_lab)
+tokenizer = AutoTokenizer.from_pretrained("mrm8488/t5-base-finetuned-emotion")
+
+model = AutoModelWithLMHead.from_pretrained("mrm8488/t5-base-finetuned-emotion")
+
+
+def get_emotion(text):
+    input_ids = tokenizer.encode(text + "</s>", return_tensors="pt")
+
+    output = model.generate(input_ids=input_ids, max_length=2)
+
+    dec = [tokenizer.decode(ids) for ids in output]
+    label = dec[0]
+    return label
+
+
+print(
+    get_emotion(
+        "i feel as if i havent blogged in ages are at least truly blogged i am doing an update cute"
+    )
+)  # Output: 'joy'
+
+print(get_emotion("i have a feeling i kinda lost my best friend"))  # Output: 'sadness'
