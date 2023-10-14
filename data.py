@@ -6,5 +6,9 @@ class Reading_files:
         return "Klasa do odczytu plików"
 
     def read_file(self):
+        text_lines = []
         with open(self.path, "r", encoding="utf-8") as f:
-            return f.read()
+            for line in f:
+                if line.startswith("# text"):
+                    text_lines.append(line)
+        return text_lines
