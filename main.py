@@ -1,5 +1,4 @@
 from data import Reading_files
-import model
 
 
 def main():
