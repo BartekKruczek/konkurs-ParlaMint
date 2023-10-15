@@ -13,12 +13,3 @@ def get_emotion(text):
     dec = [tokenizer.decode(ids) for ids in output]
     label = dec[0]
     return label
-
-
-# print(
-#     get_emotion(
-#         "i feel as if i havent blogged in ages are at least truly blogged i am doing an update cute"
-#     )
-# )
-
-# print(get_emotion("i have a feeling i kinda lost my best friend"))
