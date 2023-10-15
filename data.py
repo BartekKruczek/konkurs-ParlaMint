@@ -1,4 +1,5 @@
 import model
+import os
 
 
 class Reading_files:
@@ -6,7 +7,7 @@ class Reading_files:
         self.path = path
 
     def __repr__(self) -> str:
-        return "Klasa do odczytu plików"
+        return "Klasa do operacji na plikach tekstowych"
 
     def read_file(self):
         text_lines = []
@@ -35,3 +36,16 @@ class Reading_files:
         }
 
         return combined_dictionary
+
+    def combine_all_to_one_dictionary(self):
+        """
+        Słownik master, gdzie kluczem jest nazwa pliku, a wartością słownik z emocjami -> {nazwa_pliku: {tekst: emocja}}
+        """
+        master_dictionary = {}
+
+        # pobieranie nazwy pliku
+        file_name = os.path.basename(self.path)
+
+        master_dictionary[file_name] = self.combine_text_and_emotion()
+
+        return master_dictionary
