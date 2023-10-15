@@ -1,4 +1,9 @@
 from data import Reading_files
+from plotting_data import Plotting_data
+
+"""
+Jak na razie przetestowane dla jednego pliku. Dodać funkcjonalość dla wielu plików. Naprawić wyświetlanie emocji "anger". Pomyśleć nad innymi sposobami wizualizacji danych.
+"""
 
 
 def main():
@@ -12,7 +17,14 @@ def main():
     file_reading.combine_text_and_emotion()
 
     # zbieranie wszystkich słowników w jeden słownik
-    print(file_reading.combine_all_to_one_dictionary())
+    master_dictionary = file_reading.combine_all_to_one_dictionary()
+    print(master_dictionary)
+
+    # inicjalizacja klasy do wizualizacji danych
+    plotting_data = Plotting_data(master_dictionary=master_dictionary)
+
+    # tworznie chmury emocji
+    plotting_data.plotting_emotion_cloud()
 
     print("Done!")
 
