@@ -28,4 +28,10 @@ class Reading_files:
             emotion = model.get_emotion(cleaned_line)
             combined_dictionary[cleaned_line] = emotion
 
+        # czyszczenie słownika
+        combined_dictionary = {
+            key.lstrip("= ").strip(): value.lstrip("<pad> ").strip()
+            for key, value in combined_dictionary.items()
+        }
+
         return combined_dictionary
