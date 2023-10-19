@@ -10,15 +10,15 @@ class Reading_files:
         return "Klasa do operacji na plikach tekstowych"
 
     def read_file(self):
-        text_lines = []
+        test_file = "test.txt"
         for root, dirs, files in os.walk(self.path):
             for file in files:
                 if not file.endswith("meta.txt"):
                     with open(os.path.join(root, file), "r", encoding="utf-8") as f:
-                        for line in f:
-                            if line.startswith("# text"):
-                                text_lines.append(line)
-        return text_lines
+                        with open(test_file, "w", encoding="utf-8") as f2:
+                            for line in f:
+                                f2.write(line)
+                            f2.close()
 
     def combine_text_and_emotion(self):
         """
