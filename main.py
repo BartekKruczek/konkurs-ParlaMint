@@ -15,7 +15,7 @@ def main():
     file_reading = Reading_files(path=path)
 
     # testowanie funkcji read_file
-    print(file_reading.read_file())
+    file_reading.read_file()
 
     # tworzenie słownika z tekstem i emocją
     # file_reading.combine_text_and_emotion()
