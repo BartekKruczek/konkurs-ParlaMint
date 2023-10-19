@@ -11,14 +11,14 @@ class Reading_files:
 
     def read_file(self):
         text_lines = []
-        gender_info = []
-        with open(self.path, "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("# text"):
-                    text_lines.append(line)
-                if line.startswith("# speaker_gender"):
-                    gender_info.append(line.split()[-1])
-        return text_lines, gender_info
+        for root, dirs, files in os.walk(self.path):
+            for file in files:
+                if not file.endswith("meta.txt"):
+                    with open(os.path.join(root, file), "r", encoding="utf-8") as f:
+                        for line in f:
+                            if line.startswith("# text"):
+                                text_lines.append(line)
+        return text_lines
 
     def combine_text_and_emotion(self):
         """
