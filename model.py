@@ -1,6 +1,8 @@
 from transformers import AutoTokenizer, AutoModelWithLMHead
 
-tokenizer = AutoTokenizer.from_pretrained("mrm8488/t5-base-finetuned-emotion")
+tokenizer = AutoTokenizer.from_pretrained(
+    "mrm8488/t5-base-finetuned-emotion", use_fast=False
+)
 
 model = AutoModelWithLMHead.from_pretrained("mrm8488/t5-base-finetuned-emotion")
 
