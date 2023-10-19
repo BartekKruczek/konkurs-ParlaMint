@@ -9,4 +9,6 @@ ParlaMint-PL.TEI.ana/
 __pycache__/
 Plots/
 .vscode/
+logs.txt
+test.txt
 ```
