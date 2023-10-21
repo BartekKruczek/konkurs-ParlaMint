@@ -8,7 +8,7 @@ Jak na razie przetestowane dla jednego pliku. Dodać funkcjonalość dla wielu p
 
 
 def main():
-    print("Please wait...")
+    print("Please wait...", file=open("logs.txt", "a"))
 
     # test wczytywania plików
     path = "./ParlaMint-PL.txt"
@@ -30,10 +30,10 @@ def main():
     # tworznie chmury emocji
     # plotting_data.plotting_emotion_cloud()
 
-    print("Done!")
+    print("Done!", file=open("logs.txt", "a"))
 
     # wysyłanie konsoli do pliku
-    sys.stdout = open("logs.txt", "w")
+    sys.stdout = open("logs.txt", "a")
     sys.stdout.close()
 
 
