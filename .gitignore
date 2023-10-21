@@ -1,10 +1,6 @@
 pretrained_models/
-wav2vec2_checkpoints/
-ParlaMint-PL.conllu/
 ParlaMint-PL.TEI/
 ParlaMint-PL.txt/
-ParlaMint-PL.vert/
-ParlaMint-PL.TEI.ana/
 __pycache__/
 Plots/
 .vscode/
