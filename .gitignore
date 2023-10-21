@@ -1,4 +1,3 @@
-audio_cache/
 pretrained_models/
 wav2vec2_checkpoints/
 ParlaMint-PL.conllu/
@@ -9,6 +8,6 @@ ParlaMint-PL.TEI.ana/
 __pycache__/
 Plots/
 .vscode/
-logs.txt/
-test.txt/
+logs.txt
+test.txt
 ```
