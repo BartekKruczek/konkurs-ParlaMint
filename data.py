@@ -13,15 +13,19 @@ class Reading_files:
         test_file = "test.txt"
         with open(test_file, "w", encoding="utf-8") as f2:
             for root, dirs, files in os.walk(self.path):
-                for file in files:
-                    if file.endswith("meta.txt"):
-                        continue
-                    elif file.endswith("*README*"):
-                        continue
-                    else:
-                        with open(os.path.join(root, file), "r", encoding="utf-8") as f:
-                            f2.write(f.read() + "\n")
-                    # print(file)
+                for dir in dirs:
+                    for root, dir, files in os.walk(os.path.join(dir, self.path)):
+                        for file in files:
+                            if file.endswith("meta.txt"):
+                                continue
+                            elif file.endswith("*README*"):
+                                continue
+                            else:
+                                with open(
+                                    os.path.join(root, file), "r", encoding="utf-8"
+                                ) as f:
+                                    f2.write(f.read() + "\n")
+                            # print(file)
 
     def combine_text_and_emotion(self):
         """
