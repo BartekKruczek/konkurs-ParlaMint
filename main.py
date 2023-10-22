@@ -8,17 +8,19 @@ Jak na razie przetestowane dla jednego pliku. Dodać funkcjonalość dla wielu p
 
 
 def main():
+    sys.stdout = open("logs.txt", "a", encoding="utf-8")
     print("Please wait...", file=open("logs.txt", "a", encoding="utf-8"))
 
     # test wczytywania plików
     path = "./ParlaMint-PL.txt"
     file_reading = Reading_files(path=path)
 
-    dataframes = file_reading.read_txt_file()
-    print(dataframes, file=open("logs.txt", "a", encoding="utf-8"))
-
     # tworzenie słownika z tekstem i emocją
-    # file_reading.combine_text_and_emotion()
+    file_reading.combine_text_and_emotion()
+    print(
+        file_reading.combine_text_and_emotion(),
+        file=open("logs.txt", "a", encoding="utf-8"),
+    )
 
     # zbieranie wszystkich słowników w jeden słownik
     # master_dictionary = file_reading.combine_all_to_one_dictionary()
@@ -32,8 +34,6 @@ def main():
 
     print("Done!", file=open("logs.txt", "a", encoding="utf-8"))
 
-    # wysyłanie konsoli do pliku
-    sys.stdout = open("logs.txt", "a", encoding="utf-8")
     sys.stdout.close()
 
 
