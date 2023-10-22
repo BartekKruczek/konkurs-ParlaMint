@@ -31,11 +31,11 @@ class Reading_files:
                                     names=["speech_id", "text", "file_name"],
                                 )
                                 df["file_name"] = file
-                                self.extract_more_info(
+                                new_df = self.extract_more_info(
                                     df=df,
                                     old_root=root,
                                 )  # funkcja do wglądu poniżej
-                                dataframes.append(df)
+                                dataframes.append(new_df)
         return dataframes
 
     def combine_text_and_emotion(self):
@@ -60,7 +60,13 @@ class Reading_files:
         """
         Jak na razie próbna funkcja, będzie pobierała płeć, wiek i godność mówcy. Wszystko bedzie zapisywane w dataframe'ie.
         """
+        new_df = pd.DataFrame()
         for root, dir, files in os.walk(old_root):
             for file in files:
                 if file.endswith(".tsv"):
-                    print(file)
+                    tsv_filename = os.path.join(root, file)
+                    with open(tsv_filename, "r", encoding="utf-8") as f:
+                        temporary_df = pd.read_csv(f, sep="\t")
+                        new_df = pd.concat([df, temporary_df["Speaker_gender"]])
+
+        return new_df
