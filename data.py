@@ -67,6 +67,7 @@ class Reading_files:
                     tsv_filename = os.path.join(root, file)
                     with open(tsv_filename, "r", encoding="utf-8") as f:
                         temporary_df = pd.read_csv(f, sep="\t")
-                        new_df = pd.concat([df, temporary_df["Speaker_gender"]])
+                        column = temporary_df["Speaker_gender"]
+                        new_df = pd.concat([df, column])
 
         return new_df
