@@ -15,8 +15,8 @@ def main():
     file_reading = Reading_files(path=path)
 
     dataframes = file_reading.read_txt_file()
-    for i in dataframes:
-        print(i, file=open("logs.txt", "a", encoding="utf-8"))
+    for i in range(0, 10):
+        print(dataframes[i].head(5), file=open("logs.txt", "a", encoding="utf-8"))
 
     # tworzenie słownika z tekstem i emocją
     # file_reading.combine_text_and_emotion()
