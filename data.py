@@ -43,8 +43,11 @@ class Reading_files:
         for df in dataframes:
             for index, row in df.iterrows():
                 text = row["text"]
-                emotion = model.get_emotion(text)
-                combined_list.append([text, emotion])
+                if len(text) < 512:
+                    emotion = model.get_emotion(text)
+                    combined_list.append([text, emotion])
+                else:
+                    continue
 
         return combined_list
 
