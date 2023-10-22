@@ -14,8 +14,11 @@ def main():
     path = "./ParlaMint-PL.txt"
     file_reading = Reading_files(path=path)
 
-    # testowanie funkcji read_file
-    file_reading.write_to_txt()
+    df = file_reading.read_txt_file()
+    # print(df.head(10), file=open("logs.txt", "a"))
+    print(type(df), file=open("logs.txt", "a"))
+
+    file_reading.write_to_txt(df=df)
 
     # tworzenie słownika z tekstem i emocją
     # file_reading.combine_text_and_emotion()
