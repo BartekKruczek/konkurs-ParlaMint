@@ -28,8 +28,13 @@ class Reading_files:
                                     f,
                                     sep="\t",
                                     header=None,
-                                    names=["speech_id", "text"],
+                                    names=["speech_id", "text", "file_name"],
                                 )
+                                df["file_name"] = file
+                                self.extract_more_info(
+                                    df=df,
+                                    old_root=root,
+                                )  # funkcja do wglądu poniżej
                                 dataframes.append(df)
         return dataframes
 
@@ -51,8 +56,11 @@ class Reading_files:
 
         return combined_list
 
-    def combine_all_to_one_dictionary(self):
+    def extract_more_info(self, df, old_root):
         """
-        Trzeba zrobić od nowa
+        Jak na razie próbna funkcja, będzie pobierała płeć, wiek i godność mówcy. Wszystko bedzie zapisywane w dataframe'ie.
         """
-        pass
+        for root, dir, files in os.walk(old_root):
+            for file in files:
+                if file.endswith(".tsv"):
+                    print(file)
