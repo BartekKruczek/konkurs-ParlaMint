@@ -1,5 +1,6 @@
 import model
 import os
+import pandas as pd
 
 
 class Reading_files:
@@ -9,23 +10,30 @@ class Reading_files:
     def __repr__(self) -> str:
         return "Klasa do operacji na plikach tekstowych"
 
-    def read_file(self):
-        test_file = "test.txt"
-        with open(test_file, "w", encoding="utf-8") as f2:
-            for root, dirs, files in os.walk(self.path):
-                for dir in dirs:
+    def read_txt_file(self):
+        df = None
+        for root, dirs, files in os.walk(self.path):
+            for dir in dirs:
+                if dir == 2022:  # jak na razie testujemy dla 2022 roku
                     for root, dir, files in os.walk(os.path.join(dir, self.path)):
                         for file in files:
-                            if file.endswith("meta.txt"):
-                                continue
-                            elif file.endswith("*README*"):
-                                continue
-                            else:
+                            if file.endswith(".txt"):
                                 with open(
                                     os.path.join(root, file), "r", encoding="utf-8"
                                 ) as f:
-                                    f2.write(f.read() + "\n")
-                            # print(file)
+                                    df = pd.read_csv(
+                                        os.path.join(root, file), sep=" ", header=None
+                                    )
+                            else:
+                                continue
+        return df
+
+    def write_to_txt(self):
+        """
+        Zapis dataframe do pliku txt, jak na razie na jednym folderze
+        """
+        test_file = "test.txt"
+        self.read_txt_file.to_csv(test_file, sep=" ", header=None, index=False)
 
     def combine_text_and_emotion(self):
         """
