@@ -11,6 +11,9 @@ class Reading_files:
         return "Klasa do operacji na plikach tekstowych"
 
     def read_txt_file(self):
+        """
+        Zwraca listę dataframe'ów, gdzie każdy dataframe to jeden plik tekstowy -> kolumny: speech_id, text. Przykład: [df1, df2, df3, ...]
+        """
         dataframes = []
         df = pd.DataFrame()
         for root, dirs, files in os.walk(self.path):
@@ -32,34 +35,21 @@ class Reading_files:
 
     def combine_text_and_emotion(self):
         """
-        Wstępnie stworzony słownik = {tekst: emocja} -> może się przydać do wizualizacji
+        Lista zawierająca tekst i emocję. Przykład: [["tekst", emocja], ["tekst", emocja], ...]. Jest problem, bo wczytywane zdania są za długie.
         """
         combined_list = []
-        text_lines, gender_info = self.read_file()
+        dataframes = self.read_txt_file()
 
-        for i, line in enumerate(text_lines):
-            cleaned_line = line.strip("# text").strip()
-            emotion = model.get_emotion(cleaned_line)
-
-            # Jeśli dostępna jest informacja o płci mówcy, dodaj ją do listy
-            if i < len(gender_info):
-                gender = gender_info[i]
-                combined_list.append([cleaned_line, emotion, gender])
-            else:
-                combined_list.append([cleaned_line, emotion])
+        for df in dataframes:
+            for index, row in df.iterrows():
+                text = row["text"]
+                emotion = model.get_emotion(text)
+                combined_list.append([text, emotion])
 
         return combined_list
 
     def combine_all_to_one_dictionary(self):
         """
-        Słownik master, gdzie kluczem jest nazwa pliku, a wartością lista zawierająca tekst, emocję i płeć mówcy:
-        {nazwa_pliku: [["tekst", emocja, płeć mówcy], ["tekst", emocja, płeć mówcy], ...]}
+        Trzeba zrobić od nowa
         """
-        master_dictionary = {}
-
-        # Pobieranie nazwy pliku
-        file_name = os.path.basename(self.path)
-
-        master_dictionary[file_name] = self.combine_text_and_emotion()
-
-        return master_dictionary
+        pass
