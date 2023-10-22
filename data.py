@@ -18,22 +18,20 @@ class Reading_files:
                     for root, dir, files in os.walk(os.path.join(dir, self.path)):
                         for file in files:
                             if file.endswith(".txt"):
-                                with open(
-                                    os.path.join(root, file), "r", encoding="utf-8"
-                                ) as f:
-                                    df = pd.read_csv(
-                                        os.path.join(root, file), sep=" ", header=None
-                                    )
+                                df = pd.read_csv(
+                                    os.path.join(root, file), sep=" ", header=None
+                                )
                             else:
                                 continue
         return df
 
-    def write_to_txt(self):
+    def write_to_txt(self, df):
         """
         Zapis dataframe do pliku txt, jak na razie na jednym folderze
         """
         test_file = "test.txt"
-        self.read_txt_file.to_csv(test_file, sep=" ", header=None, index=False)
+        df = self.read_txt_file()
+        df.to_csv(test_file, sep=" ", header=None, index=False)
 
     def combine_text_and_emotion(self):
         """
