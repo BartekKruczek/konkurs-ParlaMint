@@ -14,10 +14,9 @@ def main():
     path = "./ParlaMint-PL.txt"
     file_reading = Reading_files(path=path)
 
-    dataframes, gender = file_reading.read_txt_file()
-    for i in range(0, 1):
-        for j in gender[i].columns:
-            print(j, file=open("logs.txt", "a", encoding="utf-8"))
+    combined_dataframes = file_reading.combining_all_to_one_dataframe()
+    for col in combined_dataframes[0].columns:
+        print(col, file=open("logs.txt", "a", encoding="utf-8"))
 
     # tworzenie słownika z tekstem i emocją
     # file_reading.combine_text_and_emotion()
