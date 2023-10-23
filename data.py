@@ -1,6 +1,7 @@
 import model
 import os
 import pandas as pd
+import re
 
 
 class Reading_files:
@@ -32,35 +33,14 @@ class Reading_files:
                                     names=["speech_id", "text", "file_name"],
                                 )
                                 df["file_name"] = file
-                                new_df = self.extract_more_info(
-                                    df=df,
-                                    old_root=root,
-                                )
+                                new_df = self.extract_more_info(old_root=root)
                                 dataframes.append(df)
                                 rest_metadata.append(new_df)
         return dataframes, rest_metadata
 
-    def combine_text_and_emotion(self):
+    def extract_more_info(self, old_root):
         """
-        Lista zawierająca tekst i emocję. Przykład: [["tekst", emocja], ["tekst", emocja], ...]. Jest problem, bo wczytywane zdania są za długie.
-        """
-        combined_list = []
-        dataframes = self.read_txt_file()
-
-        for df in dataframes:
-            for index, row in df.iterrows():
-                text = row["text"]
-                if len(text) < 512:
-                    emotion = model.get_emotion(text)
-                    combined_list.append([text, emotion])
-                else:
-                    continue
-
-        return combined_list
-
-    def extract_more_info(self, df, old_root):
-        """
-        Jak na razie próbna funkcja, będzie pobierała płeć, wiek i godność mówcy. Wszystko bedzie zapisywane w dataframe'ie.
+        Tworzenie dataframe'a z dodatkowymi informacjami o pliku tekstowym. Przykład: [df1, df2, df3, ...] -> df
         """
         temporary_df = pd.DataFrame()
         for root, dir, files in os.walk(old_root):
@@ -69,7 +49,6 @@ class Reading_files:
                     tsv_filename = os.path.join(root, file)
                     with open(tsv_filename, "r", encoding="utf-8") as f:
                         temporary_df = pd.read_csv(f, sep="\t")
-                        # temporary_df = temporary_df["Speaker_gender"]
 
         return temporary_df
 
@@ -87,3 +66,45 @@ class Reading_files:
                 combined_dataframes.append(combined_df)
 
         return combined_dataframes
+
+    def cleaning_text(self):
+        dataframes = self.combining_all_to_one_dataframe()
+        cleaned_dataframes = []
+        cleaned_dataframe = pd.DataFrame()
+        lines = []
+
+        for i in range(0, len(dataframes)):
+            zmienna = dataframes[i]["ID"]
+
+        # for line in dataframes[1]["text"]:
+        #     line = re.sub(r"\[\[.*?\]\]", "", line)
+        #     lines.append(line)
+
+        # cleaned_dataframe["text"] = lines
+        # cleaned_dataframes.append(cleaned_dataframe)
+
+        # for i in range(0, len(dataframes)):
+        #     dataframes[i]["text"] = cleaned_dataframe["text"][i]
+
+        return zmienna
+
+    # def cleaning_text(self):
+    #     dataframes = self.combining_all_to_one_dataframe()
+    #     cleaned_dataframes = []
+
+    #     for df in dataframes:
+    #         df["cleaned_text"] = df["text"].apply(
+    #             lambda text: re.sub(r"\[\[.*?\]\]", "", text)
+    #         )
+    #         cleaned_dataframes.append(df)
+
+    #     return cleaned_dataframes
+
+    def getting_emotion(self):
+        """
+        Zwraca dataframe z emocjami. Przykład: df -> df
+        """
+        # jak na razie testowo
+        dataframes = self.cleaning_text()
+
+        return dataframes[0]["text"]
