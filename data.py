@@ -2,6 +2,7 @@ import model
 import os
 import pandas as pd
 import re
+import matplotlib.pyplot as plt
 
 
 class Reading_files:
@@ -70,35 +71,15 @@ class Reading_files:
     def cleaning_text(self):
         dataframes = self.combining_all_to_one_dataframe()
         cleaned_dataframes = []
-        cleaned_dataframe = pd.DataFrame()
-        lines = []
 
         for i in range(0, len(dataframes)):
-            zmienna = dataframes[i]["ID"]
+            df = dataframes[i].copy()
+            df["text"] = df["text"].apply(
+                lambda line: re.sub(r"\[\[.*?\]\]", "", str(line))
+            )
+            cleaned_dataframes.append(df)
 
-        # for line in dataframes[1]["text"]:
-        #     line = re.sub(r"\[\[.*?\]\]", "", line)
-        #     lines.append(line)
-
-        # cleaned_dataframe["text"] = lines
-        # cleaned_dataframes.append(cleaned_dataframe)
-
-        # for i in range(0, len(dataframes)):
-        #     dataframes[i]["text"] = cleaned_dataframe["text"][i]
-
-        return zmienna
-
-    # def cleaning_text(self):
-    #     dataframes = self.combining_all_to_one_dataframe()
-    #     cleaned_dataframes = []
-
-    #     for df in dataframes:
-    #         df["cleaned_text"] = df["text"].apply(
-    #             lambda text: re.sub(r"\[\[.*?\]\]", "", text)
-    #         )
-    #         cleaned_dataframes.append(df)
-
-    #     return cleaned_dataframes
+        return cleaned_dataframes
 
     def getting_emotion(self):
         """
@@ -106,5 +87,29 @@ class Reading_files:
         """
         # jak na razie testowo
         dataframes = self.cleaning_text()
+        completed_dataframes = []
 
-        return dataframes[0]["text"]
+        for i in range(0, len(dataframes)):
+            df = dataframes[i].copy()
+            df["emotion"] = df["text"].apply(lambda line: model.get_emotion(str(line)))
+            completed_dataframes.append(df)
+
+        return completed_dataframes
+
+    def draw_emotion_frequency(self):
+        save_path = "./Plots"
+        dataframes = self.getting_emotion()
+        emotions = []
+        for df in dataframes:
+            emotions += list(df["emotion"])
+
+        plt.hist(emotions, bins=20)
+        plt.xlabel("Emotion")
+        plt.ylabel("Frequency")
+        plt.title("Emotion Frequency Distribution")
+
+        if save_path:
+            if not os.path.exists(save_path):
+                os.makedirs(save_path)
+            save_file = os.path.join(save_path, "emotion_frequency_plot.png")
+            plt.savefig(save_file)
