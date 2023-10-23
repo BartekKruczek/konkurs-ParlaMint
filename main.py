@@ -14,16 +14,11 @@ def main():
     path = "./ParlaMint-PL.txt"
     file_reading = Reading_files(path=path)
 
-    combined_dataframes = file_reading.combining_all_to_one_dataframe()
-    for col in combined_dataframes[0].columns:
-        print(col, file=open("logs.txt", "a", encoding="utf-8"))
+    # sprawdzanie czyszczenia
+    print(file_reading.cleaning_text(), file=open("logs.txt", "a", encoding="utf-8"))
 
-    # tworzenie słownika z tekstem i emocją
-    # file_reading.combine_text_and_emotion()
-
-    # zbieranie wszystkich słowników w jeden słownik
-    # master_dictionary = file_reading.combine_all_to_one_dictionary()
-    # print(master_dictionary)
+    # klasyfikacja emocji, na razie testowo
+    # file_reading.getting_emotion()
 
     # inicjalizacja klasy do wizualizacji danych
     # plotting_data = Plotting_data(master_dictionary=master_dictionary)
