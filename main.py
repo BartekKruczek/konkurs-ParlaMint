@@ -14,17 +14,11 @@ def main():
     path = "./ParlaMint-PL.txt"
     file_reading = Reading_files(path=path)
 
-    # sprawdzanie czyszczenia
-    print(file_reading.cleaning_text(), file=open("logs.txt", "a", encoding="utf-8"))
-
     # klasyfikacja emocji, na razie testowo
     # file_reading.getting_emotion()
 
-    # inicjalizacja klasy do wizualizacji danych
-    # plotting_data = Plotting_data(master_dictionary=master_dictionary)
-
-    # tworznie chmury emocji
-    # plotting_data.plotting_emotion_cloud()
+    # rysoawnie wykresu częstości występowania emocji
+    file_reading.draw_emotion_frequency()
 
     print("Done!", file=open("logs.txt", "a", encoding="utf-8"))
 
