@@ -15,6 +15,7 @@ class Reading_files:
         Zwraca listę dataframe'ów, gdzie każdy dataframe to jeden plik tekstowy -> kolumny: speech_id, text. Przykład: [df1, df2, df3, ...]
         """
         dataframes = []
+        gender = []
         df = pd.DataFrame()
         for root, dirs, files in os.walk(self.path):
             for dir in dirs:
@@ -34,9 +35,10 @@ class Reading_files:
                                 new_df = self.extract_more_info(
                                     df=df,
                                     old_root=root,
-                                )  # funkcja do wglądu poniżej
-                                dataframes.append(new_df)
-        return dataframes
+                                )
+                                dataframes.append(df)
+                                gender.append(new_df)
+        return dataframes, gender
 
     def combine_text_and_emotion(self):
         """
@@ -60,14 +62,13 @@ class Reading_files:
         """
         Jak na razie próbna funkcja, będzie pobierała płeć, wiek i godność mówcy. Wszystko bedzie zapisywane w dataframe'ie.
         """
-        new_df = pd.DataFrame()
+        temporary_df = pd.DataFrame()
         for root, dir, files in os.walk(old_root):
             for file in files:
                 if file.endswith(".tsv"):
                     tsv_filename = os.path.join(root, file)
                     with open(tsv_filename, "r", encoding="utf-8") as f:
                         temporary_df = pd.read_csv(f, sep="\t")
-                        column = temporary_df["Speaker_gender"]
-                        new_df = pd.concat([df, column])
+                        # temporary_df = temporary_df["Speaker_gender"]
 
-        return new_df
+        return temporary_df
