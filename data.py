@@ -15,7 +15,7 @@ class Reading_files:
         Zwraca listę dataframe'ów, gdzie każdy dataframe to jeden plik tekstowy -> kolumny: speech_id, text. Przykład: [df1, df2, df3, ...]
         """
         dataframes = []
-        gender = []
+        rest_metadata = []
         df = pd.DataFrame()
         for root, dirs, files in os.walk(self.path):
             for dir in dirs:
@@ -37,8 +37,8 @@ class Reading_files:
                                     old_root=root,
                                 )
                                 dataframes.append(df)
-                                gender.append(new_df)
-        return dataframes, gender
+                                rest_metadata.append(new_df)
+        return dataframes, rest_metadata
 
     def combine_text_and_emotion(self):
         """
@@ -72,3 +72,18 @@ class Reading_files:
                         # temporary_df = temporary_df["Speaker_gender"]
 
         return temporary_df
+
+    def combining_all_to_one_dataframe(self):
+        """
+        Łączy wszystkie dataframe'y w jeden. Przykład: [df1, df2, df3, ...] -> df
+        """
+        dataframes, rest_metadata = self.read_txt_file()
+        combined_df = pd.DataFrame()
+        combined_dataframes = []
+
+        if len(dataframes) == len(rest_metadata):
+            for i in range(0, len(dataframes)):
+                combined_df = pd.concat([dataframes[i], rest_metadata[i]], axis=1)
+                combined_dataframes.append(combined_df)
+
+        return combined_dataframes
