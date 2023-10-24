@@ -94,7 +94,7 @@ class Reading_files:
             df["emotion"] = df["text"].apply(
                 lambda line: model.get_emotion(str(line))
                 if len(str(line)) < 512
-                else None
+                else "NaN"
             )
             completed_dataframes.append(df)
 
