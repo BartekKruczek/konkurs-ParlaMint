@@ -91,7 +91,11 @@ class Reading_files:
 
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            df["emotion"] = df["text"].apply(lambda line: model.get_emotion(str(line)))
+            df["emotion"] = df["text"].apply(
+                lambda line: model.get_emotion(str(line))
+                if len(str(line)) < 512
+                else None
+            )
             completed_dataframes.append(df)
 
         return completed_dataframes
