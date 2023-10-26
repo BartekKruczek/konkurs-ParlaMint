@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
+import datetime
 
 
 class Reading_files:
@@ -139,6 +140,7 @@ class Reading_files:
     #         plt.savefig(save_file)
 
     def draw_emotion_frequency(self):
+        current_time = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         save_path = "./Plots"
         dataframes = self.getting_emotion_per_sentence()
         emotions = []
@@ -158,6 +160,7 @@ class Reading_files:
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
             save_file = os.path.join(
-                save_path, "emotion_frequency_plot_per_sentence.png"
+                save_path,
+                "emotion_frequency_plot_per_sentence_{}.png".format(str(current_time)),
             )
             plt.savefig(save_file)
