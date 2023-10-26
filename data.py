@@ -92,7 +92,7 @@ class Reading_files:
     #     for i in range(0, len(dataframes)):
     #         df = dataframes[i].copy()
     #         df["emotion"] = df["text"].apply(
-    #             lambda line: model.get_emotion(str(line)).replace("<pad> ", "")
+    #             lambda line: model.get_emotion(str(line)).replace("<pad>", "")
     #             if len(str(line)) < 512
     #             else "NaN"
     #         )
@@ -110,7 +110,7 @@ class Reading_files:
                 "."
             )  # Podziel tekst na zdania (załóżmy, że zdania są rozdzielane kropkami)
             emotions = [
-                model.get_emotion(str(sentence)).replace("<pad> ", "")
+                model.get_emotion(str(sentence)).replace("<pad>", "")
                 for sentence in sentences
                 if len(str(sentence)) < 512
             ]
