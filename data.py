@@ -81,31 +81,71 @@ class Reading_files:
 
         return cleaned_dataframes
 
-    def getting_emotion(self):
-        """
-        Zwraca dataframe z emocjami. Przykład: df -> df
-        """
-        # jak na razie testowo
+    # def getting_emotion(self):
+    #     """
+    #     Zwraca dataframe z emocjami. Przykład: df -> df
+    #     """
+    #     # jak na razie testowo
+    #     dataframes = self.cleaning_text()
+    #     completed_dataframes = []
+
+    #     for i in range(0, len(dataframes)):
+    #         df = dataframes[i].copy()
+    #         df["emotion"] = df["text"].apply(
+    #             lambda line: model.get_emotion(str(line)).replace("<pad> ", "")
+    #             if len(str(line)) < 512
+    #             else "NaN"
+    #         )
+    #         completed_dataframes.append(df)
+
+    #     return completed_dataframes
+
+    def getting_emotion_per_sentence(self):
         dataframes = self.cleaning_text()
-        completed_dataframes = []
+        sentence_emotions = []
 
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            df["emotion"] = df["text"].apply(
-                lambda line: model.get_emotion(str(line)).replace("<pad> ", "")
-                if len(str(line)) < 512
-                else "NaN"
-            )
-            completed_dataframes.append(df)
+            sentences = df["text"].split(
+                "."
+            )  # Podziel tekst na zdania (załóżmy, że zdania są rozdzielane kropkami)
+            emotions = [
+                model.get_emotion(str(sentence)).replace("<pad> ", "")
+                for sentence in sentences
+                if len(str(sentence)) < 512
+            ]
+            sentence_emotions.append(emotions)
 
-        return completed_dataframes
+        return sentence_emotions
+
+    # def draw_emotion_frequency(self):
+    #     save_path = "./Plots"
+    #     dataframes = self.getting_emotion()
+    #     emotions = []
+    #     for df in dataframes:
+    #         emotions += list(df["emotion"])
+
+    #     plt.hist(emotions, bins=20)
+    #     plt.xlabel("Emotion")
+    #     plt.ylabel("Frequency")
+    #     plt.title("Emotion Frequency Distribution")
+    #     plt.grid(True)
+    #     plt.figure(figsize=(16, 9), dpi=300)
+
+    #     if save_path:
+    #         if not os.path.exists(save_path):
+    #             os.makedirs(save_path)
+    #         save_file = os.path.join(save_path, "emotion_frequency_plot_cleaned.png")
+    #         plt.savefig(save_file)
 
     def draw_emotion_frequency(self):
         save_path = "./Plots"
-        dataframes = self.getting_emotion()
+        dataframes = self.getting_emotion_per_sentence()
         emotions = []
-        for df in dataframes:
-            emotions += list(df["emotion"])
+
+        for wypowiedz in dataframes:
+            for sentence_emotions in wypowiedz:
+                emotions += sentence_emotions
 
         plt.hist(emotions, bins=20)
         plt.xlabel("Emotion")
@@ -117,5 +157,7 @@ class Reading_files:
         if save_path:
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
-            save_file = os.path.join(save_path, "emotion_frequency_plot_cleaned.png")
+            save_file = os.path.join(
+                save_path, "emotion_frequency_plot_per_sentence.png"
+            )
             plt.savefig(save_file)
