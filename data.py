@@ -112,6 +112,7 @@ class Reading_files:
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution")
         plt.grid(True)
+        plt.figure(figsize=(16, 9), dpi=300)
 
         if save_path:
             if not os.path.exists(save_path):
