@@ -92,7 +92,7 @@ class Reading_files:
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
             df["emotion"] = df["text"].apply(
-                lambda line: model.get_emotion(str(line))
+                lambda line: model.get_emotion(str(line)).replace("<pad> ", "")
                 if len(str(line)) < 512
                 else "NaN"
             )
@@ -115,5 +115,5 @@ class Reading_files:
         if save_path:
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
-            save_file = os.path.join(save_path, "emotion_frequency_plot.png")
+            save_file = os.path.join(save_path, "emotion_frequency_plot_cleaned.png")
             plt.savefig(save_file)
