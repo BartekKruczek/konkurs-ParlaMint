@@ -18,5 +18,5 @@ def get_emotion(text):
 
 
 text = "I am very happy today!"
-emotion = get_emotion(text).replace("<pad> ", "")
+emotion = get_emotion(text).replace("<pad>", "")
 print(emotion)
