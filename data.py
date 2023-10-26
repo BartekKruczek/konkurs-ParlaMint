@@ -111,6 +111,7 @@ class Reading_files:
         plt.xlabel("Emotion")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution")
+        plt.grid(True)
 
         if save_path:
             if not os.path.exists(save_path):
