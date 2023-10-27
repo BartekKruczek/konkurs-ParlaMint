@@ -10,7 +10,7 @@ import spacy
 class Reading_files:
     def __init__(self, path):
         self.path = path
-        self.nlp = spacy.load("pl_core_news_sm")
+        self.nlp = spacy.load("pl_core_news_lg")
 
     def __repr__(self) -> str:
         return "Klasa do operacji na plikach tekstowych"
