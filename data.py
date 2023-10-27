@@ -82,24 +82,24 @@ class Reading_files:
 
         return cleaned_dataframes
 
-    # def getting_emotion(self):
-    #     """
-    #     Zwraca dataframe z emocjami. Przykład: df -> df
-    #     """
-    #     # jak na razie testowo
-    #     dataframes = self.cleaning_text()
-    #     completed_dataframes = []
+    def getting_emotion(self):
+        """
+        Zwraca dataframe z emocjami. Przykład: df -> df
+        """
+        # jak na razie testowo
+        dataframes = self.cleaning_text()
+        completed_dataframes = []
 
-    #     for i in range(0, len(dataframes)):
-    #         df = dataframes[i].copy()
-    #         df["emotion"] = df["text"].apply(
-    #             lambda line: model.get_emotion(str(line)).replace("<pad>", "")
-    #             if len(str(line)) < 512
-    #             else "NaN"
-    #         )
-    #         completed_dataframes.append(df)
+        for i in range(0, len(dataframes)):
+            df = dataframes[i].copy()
+            df["emotion"] = df["text"].apply(
+                lambda line: model.get_emotion(str(line)).replace("<pad>", "")
+                if len(str(line)) < 512
+                else "NaN"
+            )
+            completed_dataframes.append(df)
 
-    #     return completed_dataframes
+        return completed_dataframes
 
     def getting_emotion_per_sentence(self):
         dataframes = self.cleaning_text()
@@ -119,48 +119,46 @@ class Reading_files:
 
         return sentence_emotions
 
-    # def draw_emotion_frequency(self):
-    #     save_path = "./Plots"
-    #     dataframes = self.getting_emotion()
-    #     emotions = []
-    #     for df in dataframes:
-    #         emotions += list(df["emotion"])
-
-    #     plt.hist(emotions, bins=20)
-    #     plt.xlabel("Emotion")
-    #     plt.ylabel("Frequency")
-    #     plt.title("Emotion Frequency Distribution")
-    #     plt.grid(True)
-    #     plt.figure(figsize=(16, 9), dpi=300)
-
-    #     if save_path:
-    #         if not os.path.exists(save_path):
-    #             os.makedirs(save_path)
-    #         save_file = os.path.join(save_path, "emotion_frequency_plot_cleaned.png")
-    #         plt.savefig(save_file)
-
     def draw_emotion_frequency(self):
         current_time = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         save_path = "./Plots"
-        dataframes = self.getting_emotion_per_sentence()
-        emotions = []
+        dataframes_sentence = self.getting_emotion_per_sentence()
+        dataframes_speech = self.getting_emotion()
+        emotions_sentence = []
+        emotions_speech = []
 
-        for wypowiedz in dataframes:
+        for wypowiedz in dataframes_sentence:
             for sentence_emotions in wypowiedz:
-                emotions += sentence_emotions
+                emotions_sentence += sentence_emotions
 
-        plt.hist(emotions, bins=20)
-        plt.xlabel("Emotion")
-        plt.ylabel("Frequency")
-        plt.title("Emotion Frequency Distribution")
-        plt.grid(True)
+        for wypowiedz in dataframes_speech:
+            emotions_speech += list(wypowiedz["emotion"])
+
+        # Tworzenie subplots
         plt.figure(figsize=(16, 9), dpi=300)
+        plt.subplots_adjust(hspace=0.5)
+
+        # Subplot dla emocji na poziomie zdań
+        plt.subplot(2, 1, 1)
+        plt.hist(emotions_sentence, bins=20)
+        plt.xlabel("Emotion (Per Sentence)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion Frequency Distribution (Per Sentence)")
+        plt.grid(True)
+
+        # Subplot dla emocji na poziomie wypowiedzi
+        plt.subplot(2, 1, 2)
+        plt.hist(emotions_speech, bins=20)
+        plt.xlabel("Emotion (Per Speech)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion Frequency Distribution (Per Speech)")
+        plt.grid(True)
 
         if save_path:
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
             save_file = os.path.join(
                 save_path,
-                "emotion_frequency_plot_per_sentence_{}.png".format(str(current_time)),
+                "emotion_frequency_plot_{}.png".format(current_time),
             )
             plt.savefig(save_file)
