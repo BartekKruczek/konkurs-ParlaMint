@@ -8,8 +8,9 @@ import spacy
 
 
 class Reading_files:
-    def __init__(self, path):
+    def __init__(self, path, case):
         self.path = path
+        self.case = case
         self.nlp = spacy.load("pl_core_news_lg")
 
     def __repr__(self) -> str:
@@ -84,7 +85,7 @@ class Reading_files:
 
         return cleaned_dataframes
 
-    def getting_emotion(self):
+    def getting_emotion(self, case):
         """
         Zwraca dataframe z emocjami. Przykład: df -> df
         """
