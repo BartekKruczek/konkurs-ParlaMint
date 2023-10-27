@@ -97,7 +97,7 @@ class Reading_files:
             df = dataframes[i].copy()
             df["emotion"] = df["text"].apply(
                 lambda line: model.get_emotion(str(line)).replace("<pad>", "")
-                if len(str(line)) < 512
+                if len(str(line)) < 512 and df["Subcorpus"] == "COVID"
                 else "NaN"
             )
             completed_dataframes.append(df)
@@ -117,7 +117,7 @@ class Reading_files:
                 model.get_emotion(str(sentence)).replace("<pad>", "")
                 for sentence_list in sentences
                 for sentence in sentence_list
-                if len(str(sentence)) < 512
+                if len(str(sentence)) < 512 and df["Subcorpus"] == "COVID"
             ]
             sentence_emotions.append(emotions)
 
