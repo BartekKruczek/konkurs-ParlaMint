@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
-import datetime
+from datetime import datetime
 
 
 class Reading_files:
