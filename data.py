@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
-from datetime import datetime
+import datetime
 
 
 class Reading_files:
@@ -120,7 +120,9 @@ class Reading_files:
         return sentence_emotions
 
     def draw_emotion_frequency(self):
-        current_time = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        current_time = datetime.datetime.now()
+        current_time = current_time.replace(microsecond=0)
+        current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         save_path = "./Plots"
         dataframes_sentence = self.getting_emotion_per_sentence()
         dataframes_speech = self.getting_emotion()
