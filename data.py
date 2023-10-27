@@ -4,11 +4,13 @@ import pandas as pd
 import re
 import matplotlib.pyplot as plt
 import datetime
+import spacy
 
 
 class Reading_files:
     def __init__(self, path):
         self.path = path
+        self.nlp = spacy.load("pl_core_news_sm")
 
     def __repr__(self) -> str:
         return "Klasa do operacji na plikach tekstowych"
@@ -107,12 +109,13 @@ class Reading_files:
 
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            sentences = df["text"].split(
-                "."
-            )  # Podziel tekst na zdania (załóżmy, że zdania są rozdzielane kropkami)
+            sentences = df["text"].apply(
+                lambda line: [sent.text for sent in self.nlp(line).sents]
+            )
             emotions = [
                 model.get_emotion(str(sentence)).replace("<pad>", "")
-                for sentence in sentences
+                for sentence_list in sentences
+                for sentence in sentence_list
                 if len(str(sentence)) < 512
             ]
             sentence_emotions.append(emotions)
