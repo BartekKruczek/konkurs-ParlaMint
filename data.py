@@ -85,7 +85,7 @@ class Reading_files:
 
         return cleaned_dataframes
 
-    def getting_emotion(self, case):
+    def getting_emotion(self):
         """
         Zwraca dataframe z emocjami. Przykład: df -> df
         """
@@ -97,7 +97,7 @@ class Reading_files:
             df = dataframes[i].copy()
             df["emotion"] = df["text"].apply(
                 lambda line: model.get_emotion(str(line)).replace("<pad>", "")
-                if len(str(line)) < 512 and df["Subcorpus"] == "COVID"
+                if len(str(line)) < 512
                 else "NaN"
             )
             completed_dataframes.append(df)
@@ -117,7 +117,7 @@ class Reading_files:
                 model.get_emotion(str(sentence)).replace("<pad>", "")
                 for sentence_list in sentences
                 for sentence in sentence_list
-                if len(str(sentence)) < 512 and df["Subcorpus"] == "COVID"
+                if len(str(sentence)) < 512
             ]
             sentence_emotions.append(emotions)
 
@@ -128,24 +128,50 @@ class Reading_files:
         current_time = current_time.replace(microsecond=0)
         current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         save_path = "./Plots"
+
         dataframes_sentence = self.getting_emotion_per_sentence()
         dataframes_speech = self.getting_emotion()
+
         emotions_sentence = []
+        covid_emotions_sentence = []
+
         emotions_speech = []
+        covid_emotions_speech = []
 
         for wypowiedz in dataframes_sentence:
             for sentence_emotions in wypowiedz:
                 emotions_sentence += sentence_emotions
 
+        for wypowiedz in dataframes_sentence:
+            for sentence_emotions in wypowiedz:
+                covid_emotions_sentence += (
+                    sentence_emotions if wypowiedz["Subcorpus"] == "COVID" else None
+                )
+        # Usuwanie None z listy
+        covid_emotions_sentence = [
+            emotion for emotion in covid_emotions_sentence if emotion is not None
+        ]
+
         for wypowiedz in dataframes_speech:
             emotions_speech += list(wypowiedz["emotion"])
+
+        for wypowiedz in dataframes_speech:
+            covid_emotions_speech += (
+                list(wypowiedz["emotion"])
+                if wypowiedz["Subcorpus"] == "COVID"
+                else None
+            )
+        # Usuwanie None z listy
+        covid_emotions_speech = [
+            emotion for emotion in covid_emotions_speech if emotion is not None
+        ]
 
         # Tworzenie subplots
         plt.figure(figsize=(16, 9), dpi=300)
         plt.subplots_adjust(hspace=0.5)
 
         # Subplot dla emocji na poziomie zdań
-        plt.subplot(2, 1, 1)
+        plt.subplot(2, 2, 1)
         plt.hist(emotions_sentence, bins=20)
         plt.xlabel("Emotion (Per Sentence)")
         plt.ylabel("Frequency")
@@ -153,11 +179,25 @@ class Reading_files:
         plt.grid(True)
 
         # Subplot dla emocji na poziomie wypowiedzi
-        plt.subplot(2, 1, 2)
+        plt.subplot(2, 2, 2)
         plt.hist(emotions_speech, bins=20)
         plt.xlabel("Emotion (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution (Per Speech)")
+        plt.grid(True)
+
+        plt.subplot(2, 2, 3)
+        plt.hist(covid_emotions_speech, bins=20)
+        plt.xlabel("Emotion COVID (Per Speech)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion COVID Frequency Distribution (Per Speech)")
+        plt.grid(True)
+
+        plt.subplot(2, 2, 4)
+        plt.hist(covid_emotions_sentence, bins=20)
+        plt.xlabel("Emotion COVID (Per Sentence)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
         plt.grid(True)
 
         if save_path:
