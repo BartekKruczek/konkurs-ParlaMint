@@ -156,9 +156,10 @@ class Reading_files:
             emotions_speech += list(wypowiedz["emotion"])
 
         for wypowiedz in dataframes_speech:
+            emotions_speech += list(wypowiedz["emotion"])
             covid_emotions_speech += (
                 list(wypowiedz["emotion"])
-                if wypowiedz["Subcorpus"] == "COVID"
+                if "COVID" in wypowiedz["Subcorpus"]
                 else None
             )
         # Usuwanie None z listy
