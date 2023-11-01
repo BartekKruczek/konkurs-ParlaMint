@@ -177,18 +177,18 @@ class Reading_files:
 
         # Subplot dla emocji na poziomie wypowiedzi
         plt.subplot(1, 2, 1)
-        plt.hist(emotions_speech, bins=20)
+        plt.hist(emotions_speech, bins=7)
         plt.xlabel("Emotion (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution (Per Speech)")
-        plt.grid(True)
+        # plt.grid(True)
 
         plt.subplot(1, 2, 2)
-        plt.hist(covid_emotions_speech, bins=20)
+        plt.hist(covid_emotions_speech, bins=7)
         plt.xlabel("Emotion COVID (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
-        plt.grid(True)
+        # plt.grid(True)
 
         # plt.subplot(2, 2, 4)
         # plt.hist(covid_emotions_sentence, bins=20)
