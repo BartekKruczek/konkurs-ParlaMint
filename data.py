@@ -157,15 +157,11 @@ class Reading_files:
 
         for wypowiedz in dataframes_speech:
             emotions_speech += list(wypowiedz["emotion"])
-            covid_emotions_speech += (
-                list(wypowiedz["emotion"])
+            covid_emotions_speech += [
+                emotion
+                for emotion in list(wypowiedz["emotion"])
                 if "COVID" in wypowiedz["Subcorpus"]
-                else None
-            )
-        # Usuwanie None z listy
-        covid_emotions_speech = [
-            emotion for emotion in covid_emotions_speech if emotion is not None
-        ]
+            ]
 
         # Tworzenie subplots
         plt.figure(figsize=(16, 9), dpi=300)
