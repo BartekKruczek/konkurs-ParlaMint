@@ -159,8 +159,10 @@ class Reading_files:
             emotions_speech += list(wypowiedz["emotion"])
             covid_emotions_speech += [
                 emotion
-                for emotion in list(wypowiedz["emotion"])
-                if "COVID" in wypowiedz["Subcorpus"]
+                for emotion, subcorpus in zip(
+                    list(wypowiedz["emotion"]), list(wypowiedz["Subcorpus"])
+                )
+                if "COVID" in subcorpus
             ]
 
         # Tworzenie subplots
@@ -177,14 +179,14 @@ class Reading_files:
 
         # Subplot dla emocji na poziomie wypowiedzi
         plt.subplot(1, 2, 1)
-        plt.hist(emotions_speech, bins=7)
+        plt.hist(emotions_speech, bins=8)
         plt.xlabel("Emotion (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution (Per Speech)")
         # plt.grid(True)
 
         plt.subplot(1, 2, 2)
-        plt.hist(covid_emotions_speech, bins=7)
+        plt.hist(covid_emotions_speech, bins=8)
         plt.xlabel("Emotion COVID (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
