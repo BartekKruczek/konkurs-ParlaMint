@@ -34,3 +34,6 @@ for wypowiedz in df_list:
 
 print(emotions_speech)
 print(covid_emotions_speech)
+
+for x, y in zip(emotions_speech, covid_emotions_speech):
+    print(type(x), type(y))
