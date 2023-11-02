@@ -8,9 +8,8 @@ import spacy
 
 
 class Reading_files:
-    def __init__(self, path, case):
+    def __init__(self, path):
         self.path = path
-        self.case = case
         self.nlp = spacy.load("pl_core_news_lg")
 
     def __repr__(self) -> str:
