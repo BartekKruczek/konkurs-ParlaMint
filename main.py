@@ -12,8 +12,7 @@ def main():
 
     # test wczytywania plików
     path = "./ParlaMint-PL.txt"
-    wanted_case = "COVID"
-    file_reading = Reading_files(path=path, case=wanted_case)
+    file_reading = Reading_files(path=path)
 
     # rysoawnie wykresu częstości występowania emocji
     file_reading.draw_emotion_frequency()
