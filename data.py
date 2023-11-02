@@ -206,3 +206,5 @@ class Reading_files:
                 "emotion_frequency_plot_{}.png".format(current_time),
             )
             plt.savefig(save_file)
+
+        return emotions_speech, covid_emotions_speech
