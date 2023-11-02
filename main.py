@@ -15,7 +15,9 @@ def main():
     file_reading = Reading_files(path=path)
 
     # rysoawnie wykresu częstości występowania emocji
-    file_reading.draw_emotion_frequency()
+    x, y = file_reading.draw_emotion_frequency()
+    for a, b in zip(x, y):
+        print(type(a), type(b), file=open("logs.txt", "a", encoding="utf-8"))
 
     print("Done!", file=open("logs.txt", "a", encoding="utf-8"))
 
