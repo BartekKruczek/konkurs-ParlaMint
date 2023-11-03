@@ -154,15 +154,12 @@ class Reading_files:
         for wypowiedz in dataframes_speech:
             emotions_speech += list(wypowiedz["emotion"])
 
-        for wypowiedz in dataframes_speech:
-            emotions_speech += list(wypowiedz["emotion"])
-            covid_emotions_speech += [
-                emotion
-                for emotion, subcorpus in zip(
-                    list(wypowiedz["emotion"]), list(wypowiedz["Subcorpus"])
-                )
-                if "COVID" in subcorpus
-            ]
+        for dataframe in dataframes_speech:
+            covid_emotions_speech += list(
+                dataframe.loc[
+                    dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
+                ]
+            )
 
         # Tworzenie subplots
         plt.figure(figsize=(16, 9), dpi=300)
@@ -189,14 +186,12 @@ class Reading_files:
         plt.xlabel("Emotion COVID (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
-        # plt.grid(True)
 
         # plt.subplot(2, 2, 4)
         # plt.hist(covid_emotions_sentence, bins=20)
         # plt.xlabel("Emotion COVID (Per Sentence)")
         # plt.ylabel("Frequency")
         # plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
-        # plt.grid(True)
 
         if save_path:
             if not os.path.exists(save_path):
@@ -206,5 +201,3 @@ class Reading_files:
                 "emotion_frequency_plot_{}.png".format(current_time),
             )
             plt.savefig(save_file)
-
-        return emotions_speech, covid_emotions_speech
