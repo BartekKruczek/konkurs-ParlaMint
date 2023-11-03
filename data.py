@@ -80,6 +80,7 @@ class Reading_files:
             df["text"] = df["text"].apply(
                 lambda line: re.sub(r"\[\[.*?\]\]", "", str(line))
             )
+            df["text"] = df["text"].apply(lambda line: re.sub(r"\s+", " ", str(line)))
             cleaned_dataframes.append(df)
 
         return cleaned_dataframes
@@ -103,24 +104,24 @@ class Reading_files:
 
         return completed_dataframes
 
-    # def getting_emotion_per_sentence(self):
-    #     dataframes = self.cleaning_text()
-    #     sentence_emotions = []
+    def getting_emotion_per_sentence(self):
+        dataframes = self.cleaning_text()
+        sentence_emotions = []
 
-    #     for i in range(0, len(dataframes)):
-    #         df = dataframes[i].copy()
-    #         sentences = df["text"].apply(
-    #             lambda line: [sent.text for sent in self.nlp(line).sents]
-    #         )
-    #         emotions = [
-    #             model.get_emotion(str(sentence)).replace("<pad>", "")
-    #             for sentence_list in sentences
-    #             for sentence in sentence_list
-    #             if len(str(sentence)) < 512
-    #         ]
-    #         sentence_emotions.append(emotions)
+        for i in range(0, len(dataframes)):
+            df = dataframes[i].copy()
+            sentences = df["text"].apply(
+                lambda line: [sent.text for sent in self.nlp(line).sents]
+            )
+            emotions = [
+                model.get_emotion(str(sentence)).replace("<pad>", "")
+                for sentence_list in sentences
+                for sentence in sentence_list
+                if len(sentence) < 512
+            ]
+            sentence_emotions.append(emotions)
 
-    #     return sentence_emotions
+        return sentence_emotions
 
     def draw_emotion_frequency(self):
         current_time = datetime.datetime.now()
