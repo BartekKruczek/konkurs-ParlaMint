@@ -1,34 +1,34 @@
+import re
+import spacy
+import model
 import pandas as pd
 
-dic = {
-    "emotion": ["happy", "sad", "angry"],
-    "text": ["I am happy", "I am sad", "I am angry"],
-    "Subcorpus": ["a", "b", "c"],
-}
-df = pd.DataFrame(dic)
+text = "Serdecznie witam pierwszą osobę w państwie - pana prezydenta Rzeczypospolitej Polskiej. [[Długotrwałe oklaski]] Kłaniam się bardzo nisko i dziękuję za przybycie wszystkim dostojnym gościom. Swoją obecnością uświetniacie państwo tę inaugurację. Wielkie to dla nas uhonorowanie. [[Oklaski]] Pozdrawiam szanownych posłów. Witam słuchających w mediach. [[Oklaski]] Proszę o powstanie i uczczenie chwilą ciszy zmarłych, którzy służyli ojczyźnie. [[Chwila ciszy]] Dziękuję bardzo. Proszę prezydenta Rzeczypospolitej Andrzeja Dudę o wygłoszenie orędzia na 1. posiedzeniu Sejmu VIII kadencji."
 
-dic2 = {
-    "emotion": ["happy", "sad", "angry"],
-    "text": ["I am happy", "I am sad", "I am angry"],
-    "Subcorpus": ["c", "a", "b"],
-}
-df2 = pd.DataFrame(dic2)
+text = re.sub(r"\[\[.*?\]\]", "", text)
+text = re.sub(r"\s+", " ", text)
+# print(text)
+# print(len(text))
 
-df_list = [df, df2]
-print(df_list)
+nlp = spacy.load("pl_core_news_lg")
 
 
-emotions_speech = []
-covid_emotions_speech = []
+def get_emotion(text):
+    xyz = nlp(text)
+    sentences = list(xyz.sents)
+    sentence_emotions = []
 
-for dataframe in df_list:
-    covid_emotions_speech += list(
-        dataframe.loc[dataframe["Subcorpus"].str.contains("c", na=False), "emotion"]
-    )
+    for sentence in sentences:
+        sentence_text = sentence.text
+        emotion = model.get_emotion(sentence_text).replace("<pad>", "")
+        sentence_emotions.append(emotion)
+
+    return sentence_emotions
 
 
-print(emotions_speech)
-print(covid_emotions_speech)
+dataframe = pd.DataFrame()
+dataframe["text"] = [text]
 
-for x, y in zip(emotions_speech, covid_emotions_speech):
-    print(type(x), type(y))
+dataframe["emotions"] = dataframe["text"].apply(get_emotion)
+
+print(dataframe)
