@@ -170,34 +170,69 @@ class Reading_files:
                 ]
             )
 
+        # zliczanie emocji
+        emotions_count_speech = {}
+        for emotion in emotions_speech:
+            if emotion in emotions_count_speech:
+                emotions_count_speech[emotion] += 1
+            else:
+                emotions_count_speech[emotion] = 1
+
+        emotions_count_speech_covid = {}
+        for emotion in covid_emotions_speech:
+            if emotion in emotions_count_speech_covid:
+                emotions_count_speech_covid[emotion] += 1
+            else:
+                emotions_count_speech_covid[emotion] = 1
+
+        emotions_count_sentence = {}
+        for emotion in emotions_sentence:
+            if emotion in emotions_count_sentence:
+                emotions_count_sentence[emotion] += 1
+            else:
+                emotions_count_sentence[emotion] = 1
+
+        emotions_count_sentence_covid = {}
+        for emotion in covid_emotions_sentence:
+            if emotion in emotions_count_sentence_covid:
+                emotions_count_sentence_covid[emotion] += 1
+            else:
+                emotions_count_sentence_covid[emotion] = 1
+
+        # rozpakowanie słowników
+        speech_emotions, speech_count = zip(*emotions_count_speech.items())
+        speech_emotions_covid, speech_count_covid = zip(
+            *emotions_count_speech_covid.items()
+        )
+        sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
+        sentence_emotions_covid, sentence_count_covid = zip(
+            *emotions_count_sentence_covid.items()
+        )
+
         # Tworzenie subplots
         plt.figure(figsize=(16, 9), dpi=300)
         plt.subplots_adjust(hspace=0.5)
 
-        # Subplot dla emocji na poziomie zdań
         plt.subplot(2, 2, 1)
-        plt.hist(emotions_sentence, bins=8)
-        plt.xlabel("Emotion (Per Sentence)")
-        plt.ylabel("Frequency")
-        plt.title("Emotion Frequency Distribution (Per Sentence)")
-        plt.grid(True)
-
-        # Subplot dla emocji na poziomie wypowiedzi
-        plt.subplot(1, 2, 1)
-        plt.hist(emotions_speech, bins=8)
+        plt.bar(speech_emotions, speech_count)
         plt.xlabel("Emotion (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution (Per Speech)")
-        # plt.grid(True)
 
-        plt.subplot(1, 2, 2)
-        plt.hist(covid_emotions_speech, bins=8)
+        plt.subplot(2, 2, 2)
+        plt.bar(speech_emotions_covid, speech_count_covid)
         plt.xlabel("Emotion COVID (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
 
-        # plt.subplot(2, 2, 4)
-        plt.hist(covid_emotions_sentence, bins=8)
+        plt.subplot(2, 2, 3)
+        plt.bar(sentence_emotions, sentence_count)
+        plt.xlabel("Emotion (Per Sentence)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion Frequency Distribution (Per Sentence)")
+
+        plt.subplot(2, 2, 4)
+        plt.bar(sentence_emotions_covid, sentence_count_covid)
         plt.xlabel("Emotion COVID (Per Sentence)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
