@@ -89,7 +89,6 @@ class Reading_files:
         """
         Zwraca dataframe z emocjami. Przykład: df -> df
         """
-        # jak na razie testowo
         dataframes = self.cleaning_text()
         completed_dataframes = []
 
@@ -106,22 +105,35 @@ class Reading_files:
 
     def getting_emotion_per_sentence(self):
         dataframes = self.cleaning_text()
-        sentence_emotions = []
+        sentence_dataframes = []
+
+        # for dataframe in dataframes:
+        #     sentences = dataframe["text"].apply(
+        #         lambda line: [sent.text for sent in self.nlp(line).sents]
+        #     )
+        #     emotions = [
+        #         model.get_emotion(str(sentence)).replace("<pad>", "")
+        #         for sentence_list in sentences
+        #         for sentence in sentence_list
+        #         if len(sentence) < 512
+        #     ]
+        #     sentence_emotions.append(emotions)
 
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            sentences = df["text"].apply(
+            df["sentences"] = df["text"].apply(
                 lambda line: [sent.text for sent in self.nlp(line).sents]
             )
-            emotions = [
-                model.get_emotion(str(sentence)).replace("<pad>", "")
-                for sentence_list in sentences
-                for sentence in sentence_list
-                if len(sentence) < 512
-            ]
-            sentence_emotions.append(emotions)
+            df["emotion"] = df["sentences"].apply(
+                lambda sentence_list: [
+                    model.get_emotion(str(sentence)).replace("<pad>", "")
+                    for sentence in sentence_list
+                    if len(sentence) < 512
+                ]
+            )
+            sentence_dataframes.append(df)
 
-        return sentence_emotions
+        return sentence_dataframes
 
     def draw_emotion_frequency(self):
         current_time = datetime.datetime.now()
@@ -129,7 +141,7 @@ class Reading_files:
         current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         save_path = "./Plots"
 
-        # dataframes_sentence = self.getting_emotion_per_sentence()
+        dataframes_sentence = self.getting_emotion_per_sentence()
         dataframes_speech = self.getting_emotion()
 
         emotions_sentence = []
@@ -138,19 +150,15 @@ class Reading_files:
         emotions_speech = []
         covid_emotions_speech = []
 
-        # for wypowiedz in dataframes_sentence:
-        #     for sentence_emotions in wypowiedz:
-        #         emotions_sentence += sentence_emotions
+        for wypowiedz in dataframes_sentence:
+            emotions_sentence += list(wypowiedz["emotion"])
 
-        # for wypowiedz in dataframes_sentence:
-        #     for sentence_emotions in wypowiedz:
-        #         covid_emotions_sentence += (
-        #             sentence_emotions if wypowiedz["Subcorpus"] == "COVID" else None
-        #         )
-        # # Usuwanie None z listy
-        # covid_emotions_sentence = [
-        #     emotion for emotion in covid_emotions_sentence if emotion is not None
-        # ]
+        for dataframe in dataframes_sentence:
+            covid_emotions_sentence += list(
+                dataframe.loc[
+                    dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
+                ]
+            )
 
         for wypowiedz in dataframes_speech:
             emotions_speech += list(wypowiedz["emotion"])
@@ -167,12 +175,12 @@ class Reading_files:
         plt.subplots_adjust(hspace=0.5)
 
         # Subplot dla emocji na poziomie zdań
-        # plt.subplot(2, 2, 1)
-        # plt.hist(emotions_sentence, bins=20)
-        # plt.xlabel("Emotion (Per Sentence)")
-        # plt.ylabel("Frequency")
-        # plt.title("Emotion Frequency Distribution (Per Sentence)")
-        # plt.grid(True)
+        plt.subplot(2, 2, 1)
+        plt.hist(emotions_sentence, bins=8)
+        plt.xlabel("Emotion (Per Sentence)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion Frequency Distribution (Per Sentence)")
+        plt.grid(True)
 
         # Subplot dla emocji na poziomie wypowiedzi
         plt.subplot(1, 2, 1)
@@ -189,10 +197,10 @@ class Reading_files:
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
 
         # plt.subplot(2, 2, 4)
-        # plt.hist(covid_emotions_sentence, bins=20)
-        # plt.xlabel("Emotion COVID (Per Sentence)")
-        # plt.ylabel("Frequency")
-        # plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
+        plt.hist(covid_emotions_sentence, bins=8)
+        plt.xlabel("Emotion COVID (Per Sentence)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
 
         if save_path:
             if not os.path.exists(save_path):
