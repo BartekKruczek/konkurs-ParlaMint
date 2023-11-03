@@ -21,15 +21,10 @@ print(df_list)
 emotions_speech = []
 covid_emotions_speech = []
 
-for wypowiedz in df_list:
-    emotions_speech += list(wypowiedz["emotion"])
-    covid_emotions_speech += [
-        emotion
-        for emotion, subcorpus in zip(
-            list(wypowiedz["emotion"]), list(wypowiedz["Subcorpus"])
-        )
-        if "a" in subcorpus
-    ]
+for dataframe in df_list:
+    covid_emotions_speech += list(
+        dataframe.loc[dataframe["Subcorpus"].str.contains("c", na=False), "emotion"]
+    )
 
 
 print(emotions_speech)
