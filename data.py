@@ -173,19 +173,19 @@ class Reading_files:
             else:
                 emotions_count_speech_covid[emotion] = 1
 
-        emotions_count_sentence = {}
-        for emotion in emotions_sentence:
-            if emotion in emotions_count_sentence:
-                emotions_count_sentence[emotion] += 1
-            else:
-                emotions_count_sentence[emotion] = 1
+        # emotions_count_sentence = {}
+        # for emotion in emotions_sentence:
+        #     if emotion in emotions_count_sentence:
+        #         emotions_count_sentence[emotion] += 1
+        #     else:
+        #         emotions_count_sentence[emotion] = 1
 
-        emotions_count_sentence_covid = {}
-        for emotion in covid_emotions_sentence:
-            if emotion in emotions_count_sentence_covid:
-                emotions_count_sentence_covid[emotion] += 1
-            else:
-                emotions_count_sentence_covid[emotion] = 1
+        # emotions_count_sentence_covid = {}
+        # for emotion in covid_emotions_sentence:
+        #     if emotion in emotions_count_sentence_covid:
+        #         emotions_count_sentence_covid[emotion] += 1
+        #     else:
+        #         emotions_count_sentence_covid[emotion] = 1
 
         # rozpakowanie słowników
         speech_emotions, speech_count = zip(*emotions_count_speech.items())
@@ -193,10 +193,10 @@ class Reading_files:
             *emotions_count_speech_covid.items()
         )
 
-        sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
-        sentence_emotions_covid, sentence_count_covid = zip(
-            *emotions_count_sentence_covid.items()
-        )
+        # sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
+        # sentence_emotions_covid, sentence_count_covid = zip(
+        #     *emotions_count_sentence_covid.items()
+        # )
 
         # Tworzenie subplots
         plt.figure(figsize=(16, 9), dpi=300)
