@@ -107,18 +107,6 @@ class Reading_files:
         dataframes = self.cleaning_text()
         sentence_dataframes = []
 
-        # for dataframe in dataframes:
-        #     sentences = dataframe["text"].apply(
-        #         lambda line: [sent.text for sent in self.nlp(line).sents]
-        #     )
-        #     emotions = [
-        #         model.get_emotion(str(sentence)).replace("<pad>", "")
-        #         for sentence_list in sentences
-        #         for sentence in sentence_list
-        #         if len(sentence) < 512
-        #     ]
-        #     sentence_emotions.append(emotions)
-
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
             df["sentences"] = df["text"].apply(
@@ -141,7 +129,7 @@ class Reading_files:
         current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         save_path = "./Plots"
 
-        dataframes_sentence = self.getting_emotion_per_sentence()
+        # dataframes_sentence = self.getting_emotion_per_sentence()
         dataframes_speech = self.getting_emotion()
 
         emotions_sentence = []
@@ -150,15 +138,15 @@ class Reading_files:
         emotions_speech = []
         covid_emotions_speech = []
 
-        for wypowiedz in dataframes_sentence:
-            emotions_sentence += list(wypowiedz["emotion"])
+        # for wypowiedz in dataframes_sentence:
+        #     emotions_sentence += list(wypowiedz["emotion"])
 
-        for dataframe in dataframes_sentence:
-            covid_emotions_sentence += list(
-                dataframe.loc[
-                    dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
-                ]
-            )
+        # for dataframe in dataframes_sentence:
+        #     covid_emotions_sentence += list(
+        #         dataframe.loc[
+        #             dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
+        #         ]
+        #     )
 
         for wypowiedz in dataframes_speech:
             emotions_speech += list(wypowiedz["emotion"])
@@ -204,6 +192,7 @@ class Reading_files:
         speech_emotions_covid, speech_count_covid = zip(
             *emotions_count_speech_covid.items()
         )
+
         sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
         sentence_emotions_covid, sentence_count_covid = zip(
             *emotions_count_sentence_covid.items()
@@ -213,29 +202,29 @@ class Reading_files:
         plt.figure(figsize=(16, 9), dpi=300)
         plt.subplots_adjust(hspace=0.5)
 
-        plt.subplot(2, 2, 1)
+        plt.subplot(1, 2, 1)
         plt.bar(speech_emotions, speech_count)
         plt.xlabel("Emotion (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution (Per Speech)")
 
-        plt.subplot(2, 2, 2)
+        plt.subplot(1, 2, 2)
         plt.bar(speech_emotions_covid, speech_count_covid)
         plt.xlabel("Emotion COVID (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
 
-        plt.subplot(2, 2, 3)
-        plt.bar(sentence_emotions, sentence_count)
-        plt.xlabel("Emotion (Per Sentence)")
-        plt.ylabel("Frequency")
-        plt.title("Emotion Frequency Distribution (Per Sentence)")
+        # plt.subplot(2, 2, 3)
+        # plt.bar(sentence_emotions, sentence_count)
+        # plt.xlabel("Emotion (Per Sentence)")
+        # plt.ylabel("Frequency")
+        # plt.title("Emotion Frequency Distribution (Per Sentence)")
 
-        plt.subplot(2, 2, 4)
-        plt.bar(sentence_emotions_covid, sentence_count_covid)
-        plt.xlabel("Emotion COVID (Per Sentence)")
-        plt.ylabel("Frequency")
-        plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
+        # plt.subplot(2, 2, 4)
+        # plt.bar(sentence_emotions_covid, sentence_count_covid)
+        # plt.xlabel("Emotion COVID (Per Sentence)")
+        # plt.ylabel("Frequency")
+        # plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
 
         if save_path:
             if not os.path.exists(save_path):
