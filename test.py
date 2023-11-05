@@ -1,3 +1,4 @@
+#
 import re
 import spacy
 import model
@@ -10,25 +11,41 @@ text2 = "Serdecznie witam pierwszą osobę w państwie - pana prezydenta Rzeczyp
 
 text = re.sub(r"\[\[.*?\]\]", "", text)
 text = re.sub(r"\s+", " ", text)
-# print(text)
-# print(len(text))
+
 text2 = re.sub(r"\[\[.*?\]\]", "", text2)
 text2 = re.sub(r"\s+", " ", text2)
 
 nlp = spacy.load("pl_core_news_lg")
 
 
-def get_emotion(text):
-    xyz = nlp(text)
-    sentences = list(xyz.sents)
-    sentence_emotions = []
+def split_text_into_blocks(text, max_length=512):
+    blocks = []
+    current_block = ""
 
-    for sentence in sentences:
-        sentence_text = sentence.text
-        emotion = model.get_emotion(sentence_text).replace("<pad>", "")
-        sentence_emotions.append(emotion)
+    for sentence in text.split(". "):
+        if len(current_block) + len(sentence) + 1 <= max_length:
+            if current_block:
+                current_block += ". "
+            current_block += sentence
+        else:
+            blocks.append(current_block)
+            current_block = sentence
 
-    return sentence_emotions
+    if current_block:
+        blocks.append(current_block)
+
+    return blocks
+
+
+def get_emotion_for_text(text):
+    blocks = split_text_into_blocks(text)
+    emotions = []
+
+    for block in blocks:
+        emotion = model.get_emotion(block).replace("<pad>", "")
+        emotions.append(emotion)
+
+    return emotions
 
 
 dataframe = pd.DataFrame()
@@ -37,15 +54,12 @@ dataframe["text"] = [text]
 dataframe2 = pd.DataFrame()
 dataframe2["text"] = [text2]
 
-
-dataframe["emotions"] = dataframe["text"].apply(get_emotion)
-dataframe2["emotions"] = dataframe2["text"].apply(get_emotion)
+dataframe["emotions"] = dataframe["text"].apply(get_emotion_for_text)
+dataframe2["emotions"] = dataframe2["text"].apply(get_emotion_for_text)
 
 sentence_dataframes = []
 sentence_dataframes.append(dataframe)
 sentence_dataframes.append(dataframe2)
-
-print(sentence_dataframes)
 
 emotions = []
 for emotions_list in sentence_dataframes:
@@ -62,21 +76,10 @@ for emotion in emotions:
         emotions_count[emotion] = 1
 print(emotions_count)
 
-# deleting key from emotions_count dictionary
-# del emotions_count["Tak"]
-
 emotions, counts = zip(*emotions_count.items())
 
-# generating colors for each emotion
-colors = []
-for i in range(0, len(emotions)):
-    colors.append(
-        np.random.rand(
-            3,
-        )
-    )
+colors = [np.random.rand(3) for _ in emotions]
 
-
-plt.figure(figsize=(16, 9), dpi=300)
-plt.bar(emotions, counts, color=colors)
-plt.show()
+# plt.figure(figsize=(16, 9), dpi=300)
+# plt.bar(emotions, counts, color=colors)
+# plt.show()
