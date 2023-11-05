@@ -18,7 +18,7 @@ text2 = re.sub(r"\s+", " ", text2)
 nlp = spacy.load("pl_core_news_lg")
 
 
-def split_text_into_blocks(text, max_length=512):
+def split_text_into_blocks(text, max_length=64):
     blocks = []
     current_block = ""
 
@@ -80,6 +80,6 @@ emotions, counts = zip(*emotions_count.items())
 
 colors = [np.random.rand(3) for _ in emotions]
 
-# plt.figure(figsize=(16, 9), dpi=300)
-# plt.bar(emotions, counts, color=colors)
-# plt.show()
+plt.figure(figsize=(16, 9), dpi=300)
+plt.bar(emotions, counts, color=colors)
+plt.show()
