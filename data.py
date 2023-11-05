@@ -5,6 +5,7 @@ import re
 import matplotlib.pyplot as plt
 import datetime
 import spacy
+import numpy as np
 
 
 class Reading_files:
@@ -165,6 +166,7 @@ class Reading_files:
                 emotions_count_speech[emotion] += 1
             else:
                 emotions_count_speech[emotion] = 1
+        del emotions_count_speech["Tak"]
 
         emotions_count_speech_covid = {}
         for emotion in covid_emotions_speech:
@@ -172,6 +174,7 @@ class Reading_files:
                 emotions_count_speech_covid[emotion] += 1
             else:
                 emotions_count_speech_covid[emotion] = 1
+        del emotions_count_speech_covid["Tak"]
 
         # emotions_count_sentence = {}
         # for emotion in emotions_sentence:
@@ -198,18 +201,35 @@ class Reading_files:
         #     *emotions_count_sentence_covid.items()
         # )
 
+        # generowanie kolorów
+        speech_colors = []
+        for i in range(0, len(speech_emotions)):
+            speech_colors.append(
+                np.random.rand(
+                    3,
+                )
+            )
+
+        speech_colors_covid = []
+        for i in range(0, len(speech_emotions_covid)):
+            speech_colors_covid.append(
+                np.random.rand(
+                    3,
+                )
+            )
+
         # Tworzenie subplots
-        plt.figure(figsize=(16, 9), dpi=300)
+        plt.figure(figsize=(16, 9), dpi=600)
         plt.subplots_adjust(hspace=0.5)
 
         plt.subplot(1, 2, 1)
-        plt.bar(speech_emotions, speech_count)
+        plt.bar(speech_emotions, speech_count, color=speech_colors)
         plt.xlabel("Emotion (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution (Per Speech)")
 
         plt.subplot(1, 2, 2)
-        plt.bar(speech_emotions_covid, speech_count_covid)
+        plt.bar(speech_emotions_covid, speech_count_covid, color=speech_colors_covid)
         plt.xlabel("Emotion COVID (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
