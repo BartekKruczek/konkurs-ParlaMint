@@ -124,13 +124,44 @@ class Reading_files:
 
         return sentence_dataframes
 
+    def getting_emotion_per_block(self):
+        # tu zlicza emocje w blokach
+        def block(text):
+            xyz = self.nlp(text)
+            sentences = list(xyz.sents)
+            sentence_emotions = []
+            current_block = ""
+            for sentence in sentences:
+                if len(current_block) + len(sentence.text) + 1 <= 512:
+                    if current_block:
+                        current_block += ". " + sentence.text
+                    else:
+                        current_block = sentence.text
+                else:
+                    emotion = model.get_emotion(current_block).replace("<pad>", "")
+                    sentence_emotions.append(emotion)
+                    current_block = sentence.text
+            if current_block:
+                emotion = model.get_emotion(current_block).replace("<pad>", "")
+                sentence_emotions.append(emotion)
+            return sentence_emotions
+
+        # jak na razie po staremu
+        dataframes = self.cleaning_text()
+        sentence_dataframes = []
+
+        for i in range(0, len(dataframes)):
+            df = dataframes[i].copy()
+            df["emotion"] = block(df["text"])
+            sentence_dataframes.append(df)
+
     def draw_emotion_frequency(self):
         current_time = datetime.datetime.now()
         current_time = current_time.replace(microsecond=0)
         current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         save_path = "./Plots"
 
-        # dataframes_sentence = self.getting_emotion_per_sentence()
+        dataframes_sentence = self.getting_emotion_per_block()
         dataframes_speech = self.getting_emotion()
 
         emotions_sentence = []
@@ -139,15 +170,15 @@ class Reading_files:
         emotions_speech = []
         covid_emotions_speech = []
 
-        # for wypowiedz in dataframes_sentence:
-        #     emotions_sentence += list(wypowiedz["emotion"])
+        for wypowiedz in dataframes_sentence:
+            emotions_sentence += list(wypowiedz["emotion"])
 
-        # for dataframe in dataframes_sentence:
-        #     covid_emotions_sentence += list(
-        #         dataframe.loc[
-        #             dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
-        #         ]
-        #     )
+        for dataframe in dataframes_sentence:
+            covid_emotions_sentence += list(
+                dataframe.loc[
+                    dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
+                ]
+            )
 
         for wypowiedz in dataframes_speech:
             emotions_speech += list(wypowiedz["emotion"])
@@ -176,19 +207,21 @@ class Reading_files:
                 emotions_count_speech_covid[emotion] = 1
         del emotions_count_speech_covid["Tak"]
 
-        # emotions_count_sentence = {}
-        # for emotion in emotions_sentence:
-        #     if emotion in emotions_count_sentence:
-        #         emotions_count_sentence[emotion] += 1
-        #     else:
-        #         emotions_count_sentence[emotion] = 1
+        emotions_count_sentence = {}
+        for emotion in emotions_sentence:
+            if emotion in emotions_count_sentence:
+                emotions_count_sentence[emotion] += 1
+            else:
+                emotions_count_sentence[emotion] = 1
+        del emotions_count_speech_covid["Tak"]
 
-        # emotions_count_sentence_covid = {}
-        # for emotion in covid_emotions_sentence:
-        #     if emotion in emotions_count_sentence_covid:
-        #         emotions_count_sentence_covid[emotion] += 1
-        #     else:
-        #         emotions_count_sentence_covid[emotion] = 1
+        emotions_count_sentence_covid = {}
+        for emotion in covid_emotions_sentence:
+            if emotion in emotions_count_sentence_covid:
+                emotions_count_sentence_covid[emotion] += 1
+            else:
+                emotions_count_sentence_covid[emotion] = 1
+        del emotions_count_speech_covid["Tak"]
 
         # rozpakowanie słowników
         speech_emotions, speech_count = zip(*emotions_count_speech.items())
@@ -196,10 +229,10 @@ class Reading_files:
             *emotions_count_speech_covid.items()
         )
 
-        # sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
-        # sentence_emotions_covid, sentence_count_covid = zip(
-        #     *emotions_count_sentence_covid.items()
-        # )
+        sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
+        sentence_emotions_covid, sentence_count_covid = zip(
+            *emotions_count_sentence_covid.items()
+        )
 
         # generowanie kolorów
         speech_colors = []
@@ -213,6 +246,22 @@ class Reading_files:
         speech_colors_covid = []
         for i in range(0, len(speech_emotions_covid)):
             speech_colors_covid.append(
+                np.random.rand(
+                    3,
+                )
+            )
+
+        sentence_colors = []
+        for i in range(0, len(sentence_emotions)):
+            sentence_colors.append(
+                np.random.rand(
+                    3,
+                )
+            )
+
+        sentence_colors_covid = []
+        for i in range(0, len(sentence_emotions_covid)):
+            sentence_colors_covid.append(
                 np.random.rand(
                     3,
                 )
@@ -234,17 +283,19 @@ class Reading_files:
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
 
-        # plt.subplot(2, 2, 3)
-        # plt.bar(sentence_emotions, sentence_count)
-        # plt.xlabel("Emotion (Per Sentence)")
-        # plt.ylabel("Frequency")
-        # plt.title("Emotion Frequency Distribution (Per Sentence)")
+        plt.subplot(2, 2, 3)
+        plt.bar(sentence_emotions, sentence_count, color=sentence_colors)
+        plt.xlabel("Emotion (Per Block)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion Frequency Distribution (Per Block)")
 
-        # plt.subplot(2, 2, 4)
-        # plt.bar(sentence_emotions_covid, sentence_count_covid)
-        # plt.xlabel("Emotion COVID (Per Sentence)")
-        # plt.ylabel("Frequency")
-        # plt.title("Emotion COVID Frequency Distribution (Per Sentence)")
+        plt.subplot(2, 2, 4)
+        plt.bar(
+            sentence_emotions_covid, sentence_count_covid, color=sentence_colors_covid
+        )
+        plt.xlabel("Emotion COVID (Per Block)")
+        plt.ylabel("Frequency")
+        plt.title("Emotion COVID Frequency Distribution (Per Block)")
 
         if save_path:
             if not os.path.exists(save_path):
