@@ -45,20 +45,6 @@ sentence_dataframes = []
 sentence_dataframes.append(dataframe)
 sentence_dataframes.append(dataframe2)
 
-# for i in range(0, len(sentence_dataframes)):
-#     df = sentence_dataframes[i].copy()
-#     df["sentences"] = df["text"].apply(
-#         lambda line: [sent.text for sent in nlp(line).sents]
-#     )
-#     df["emotion"] = df["sentences"].apply(
-#         lambda sentence_list: [
-#             model.get_emotion(str(sentence)).replace("<pad>", "")
-#             for sentence in sentence_list
-#             if len(sentence) < 512
-#         ]
-#     )
-#     sentence_dataframes.append(df)
-
 print(sentence_dataframes)
 
 emotions = []
@@ -76,7 +62,21 @@ for emotion in emotions:
         emotions_count[emotion] = 1
 print(emotions_count)
 
+# deleting key from emotions_count dictionary
+# del emotions_count["Tak"]
+
 emotions, counts = zip(*emotions_count.items())
-plt.figure(figsize=(10, 5))
-plt.bar(emotions, counts)
+
+# generating colors for each emotion
+colors = []
+for i in range(0, len(emotions)):
+    colors.append(
+        np.random.rand(
+            3,
+        )
+    )
+
+
+plt.figure(figsize=(16, 9), dpi=300)
+plt.bar(emotions, counts, color=colors)
 plt.show()
