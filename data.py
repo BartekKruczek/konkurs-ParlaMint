@@ -152,8 +152,10 @@ class Reading_files:
 
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            df["emotion"] = block(df["text"])
+            df["emotion"] = df["text"].apply(block)
             sentence_dataframes.append(df)
+
+        return sentence_dataframes
 
     def draw_emotion_frequency(self):
         current_time = datetime.datetime.now()
