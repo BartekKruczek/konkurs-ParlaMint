@@ -1,8 +1,6 @@
 # Load model directly
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from googletrans import Translator
-
-translator = Translator()
+from deep_translator import GoogleTranslator
 
 
 tokenizer = AutoTokenizer.from_pretrained(
@@ -13,9 +11,9 @@ model = AutoModelForSequenceClassification.from_pretrained(
 )
 
 # tekst nie ma na celu obrażać kobiet, jest wykorzystywany w celach testowych i naukowych
-text = "Chcę cię zgwałcić wredna suko"
-translated_text = translator.translate(text, src="pl", dest="es").text
-print(translated_text)
+text = "Jesteś najwredniejszym i najgłupszym facetem na świecie."
+
+translated_text = GoogleTranslator(src="auto", target="es").translate(text)
 
 input_ids = tokenizer.encode(text, return_tensors="pt")
 output = model(input_ids)
@@ -24,6 +22,6 @@ if (
     output.logits.softmax(dim=1)[0].tolist()[0]
     > output.logits.softmax(dim=1)[0].tolist()[1]
 ):
-    print("Not misogynistic")
+    print("No")
 else:
-    print("Misogynistic")
+    print("Yes")
