@@ -1,11 +1,11 @@
-from transformers import AutoTokenizer, AutoModelWithLMHead
+from transformers import AutoTokenizer, AutoModelWithLMHead, AutoModelForCausalLM
 
 tokenizer = AutoTokenizer.from_pretrained(
     "glombardo/misogynistic-statements-classification-model"
 )
 
-model = AutoModelWithLMHead.from_pretrained(
-    "glombardo/misogynistic-statements-classification-model"
+model = AutoModelForCausalLM.from_pretrained(
+    "glombardo/misogynistic-statements-classification-model", is_decoder=True
 )
 
 text = "Test text"
