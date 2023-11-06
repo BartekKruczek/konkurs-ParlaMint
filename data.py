@@ -104,25 +104,25 @@ class Reading_files:
 
         return completed_dataframes
 
-    def getting_emotion_per_sentence(self):
-        dataframes = self.cleaning_text()
-        sentence_dataframes = []
+    # def getting_emotion_per_sentence(self):
+    #     dataframes = self.cleaning_text()
+    #     sentence_dataframes = []
 
-        for i in range(0, len(dataframes)):
-            df = dataframes[i].copy()
-            df["sentences"] = df["text"].apply(
-                lambda line: [sent.text for sent in self.nlp(line).sents]
-            )
-            df["emotion"] = df["sentences"].apply(
-                lambda sentence_list: [
-                    model.get_emotion(str(sentence)).replace("<pad>", "")
-                    for sentence in sentence_list
-                    if len(sentence) < 512
-                ]
-            )
-            sentence_dataframes.append(df)
+    #     for i in range(0, len(dataframes)):
+    #         df = dataframes[i].copy()
+    #         df["sentences"] = df["text"].apply(
+    #             lambda line: [sent.text for sent in self.nlp(line).sents]
+    #         )
+    #         df["emotion"] = df["sentences"].apply(
+    #             lambda sentence_list: [
+    #                 model.get_emotion(str(sentence)).replace("<pad>", "")
+    #                 for sentence in sentence_list
+    #                 if len(sentence) < 512
+    #             ]
+    #         )
+    #         sentence_dataframes.append(df)
 
-        return sentence_dataframes
+    #     return sentence_dataframes
 
     def getting_emotion_per_block(self):
         # tu zlicza emocje w blokach
