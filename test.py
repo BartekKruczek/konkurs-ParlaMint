@@ -97,6 +97,80 @@
 # plt.bar(emotions, counts, color=colors)
 # plt.show()
 
+# import re
+# import spacy
+# import model
+# import pandas as pd
+# import matplotlib.pyplot as plt
+# import numpy as np
+
+# text = "Serdecznie witam pierwszą osobę w państwie - pana prezydenta Rzeczypospolitej Polskiej. [[Długotrwałe oklaski]] Kłaniam się bardzo nisko i dziękuję za przybycie wszystkim dostojnym gościom. Swoją obecnością uświetniacie państwo tę inaugurację. Wielkie to dla nas uhonorowanie. [[Oklaski]] Pozdrawiam szanownych posłów. Witam słuchających w mediach. [[Oklaski]] Proszę o powstanie i uczczenie chwilą ciszy zmarłych, którzy służyli ojczyźnie. [[Chwila ciszy]] Dziękuję bardzo. Proszę prezydenta Rzeczypospolitej Andrzeja Dudę o wygłoszenie orędzia na 1. posiedzeniu Sejmu VIII kadencji."
+# text2 = "Serdecznie witam pierwszą osobę w państwie - pana prezydenta Rzeczypospolitej Polskiej. [[Długotrwałe oklaski]] Kłaniam się bardzo nisko i dziękuję za przybycie wszystkim dostojnym gościom. Swoją obecnością uświetniacie państwo tę inaugurację. Wielkie to dla nas uhonorowanie. [[Oklaski]] Pozdrawiam szanownych posłów. Witam słuchających w mediach. [[Oklaski]] Proszę o powstanie i uczczenie chwilą ciszy zmarłych, którzy służyli ojczyźnie. [[Chwila ciszy]] Dziękuję bardzo. Proszę prezydenta Rzeczypospolitej Andrzeja Dudę o wygłoszenie orędzia na 1. posiedzeniu Sejmu VIII kadencji."
+
+
+# def get_emotion(text):
+#     xyz = nlp(text)
+#     sentences = list(xyz.sents)
+#     sentence_emotions = []
+#     current_block = ""
+#     for sentence in sentences:
+#         if len(current_block) + len(sentence.text) + 1 <= 512:
+#             if current_block:
+#                 current_block += ". " + sentence.text
+#             else:
+#                 current_block = sentence.text
+#         else:
+#             emotion = model.get_emotion(current_block).replace("<pad>", "")
+#             sentence_emotions.append(emotion)
+#             current_block = sentence.text
+#     if current_block:
+#         emotion = model.get_emotion(current_block).replace("<pad>", "")
+#         sentence_emotions.append(emotion)
+#     return sentence_emotions
+
+
+# nlp = spacy.load("pl_core_news_lg")
+
+# dataframe = pd.DataFrame()
+# dataframe["text"] = [text]
+
+# dataframe2 = pd.DataFrame()
+# dataframe2["text"] = [text2]
+
+# dataframe["emotions"] = dataframe["text"].apply(get_emotion)
+# dataframe2["emotions"] = dataframe2["text"].apply(get_emotion)
+
+# sentence_dataframes = []
+# sentence_dataframes.append(dataframe)
+# sentence_dataframes.append(dataframe2)
+
+# emotions = []
+# for emotions_list in sentence_dataframes:
+#     for element in emotions_list["emotions"]:
+#         for x in element:
+#             emotions.append(x)
+
+# emotions_count = {}
+# for emotion in emotions:
+#     if emotion in emotions_count:
+#         emotions_count[emotion] += 1
+#     else:
+#         emotions_count[emotion] = 1
+
+# emotions, counts = zip(*emotions_count.items())
+
+# colors = []
+# for i in range(0, len(emotions)):
+#     colors.append(
+#         np.random.rand(
+#             3,
+#         )
+#     )
+
+# plt.figure(figsize=(16, 9), dpi=300)
+# plt.bar(emotions, counts, color=colors)
+# plt.show()
+
 import re
 import spacy
 import model
@@ -104,69 +178,59 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 text = "Serdecznie witam pierwszą osobę w państwie - pana prezydenta Rzeczypospolitej Polskiej. [[Długotrwałe oklaski]] Kłaniam się bardzo nisko i dziękuję za przybycie wszystkim dostojnym gościom. Swoją obecnością uświetniacie państwo tę inaugurację. Wielkie to dla nas uhonorowanie. [[Oklaski]] Pozdrawiam szanownych posłów. Witam słuchających w mediach. [[Oklaski]] Proszę o powstanie i uczczenie chwilą ciszy zmarłych, którzy służyli ojczyźnie. [[Chwila ciszy]] Dziękuję bardzo. Proszę prezydenta Rzeczypospolitej Andrzeja Dudę o wygłoszenie orędzia na 1. posiedzeniu Sejmu VIII kadencji."
 text2 = "Serdecznie witam pierwszą osobę w państwie - pana prezydenta Rzeczypospolitej Polskiej. [[Długotrwałe oklaski]] Kłaniam się bardzo nisko i dziękuję za przybycie wszystkim dostojnym gościom. Swoją obecnością uświetniacie państwo tę inaugurację. Wielkie to dla nas uhonorowanie. [[Oklaski]] Pozdrawiam szanownych posłów. Witam słuchających w mediach. [[Oklaski]] Proszę o powstanie i uczczenie chwilą ciszy zmarłych, którzy służyli ojczyźnie. [[Chwila ciszy]] Dziękuję bardzo. Proszę prezydenta Rzeczypospolitej Andrzeja Dudę o wygłoszenie orędzia na 1. posiedzeniu Sejmu VIII kadencji."
 
-
-def get_emotion(text):
-    xyz = nlp(text)
-    sentences = list(xyz.sents)
-    sentence_emotions = []
-    current_block = ""
-    for sentence in sentences:
-        if len(current_block) + len(sentence.text) + 1 <= 512:
-            if current_block:
-                current_block += ". " + sentence.text
-            else:
-                current_block = sentence.text
-        else:
-            emotion = model.get_emotion(current_block).replace("<pad>", "")
-            sentence_emotions.append(emotion)
-            current_block = sentence.text
-    if current_block:
-        emotion = model.get_emotion(current_block).replace("<pad>", "")
-        sentence_emotions.append(emotion)
-    return sentence_emotions
-
-
 nlp = spacy.load("pl_core_news_lg")
 
-dataframe = pd.DataFrame()
-dataframe["text"] = [text]
+df1 = pd.DataFrame()
+df1["text"] = [text]
 
-dataframe2 = pd.DataFrame()
-dataframe2["text"] = [text2]
+df2 = pd.DataFrame()
+df2["text"] = [text2]
 
-dataframe["emotions"] = dataframe["text"].apply(get_emotion)
-dataframe2["emotions"] = dataframe2["text"].apply(get_emotion)
+df_list = []
+df_list.append(df1)
+df_list.append(df2)
+# print(df_list)
 
-sentence_dataframes = []
-sentence_dataframes.append(dataframe)
-sentence_dataframes.append(dataframe2)
 
-emotions = []
-for emotions_list in sentence_dataframes:
-    for element in emotions_list["emotions"]:
-        for x in element:
-            emotions.append(x)
+def getting_emotion_per_block(self):
+    # tu zlicza emocje w blokach
+    def block(text):
+        # xyz = self.nlp(text)
+        xyz = nlp(text)
+        sentences = list(xyz.sents)
+        sentence_emotions = []
+        current_block = ""
+        for sentence in sentences:
+            if len(current_block) + len(sentence.text) + 1 <= 512:
+                if current_block:
+                    current_block += ". " + sentence.text
+                else:
+                    current_block = sentence.text
+            else:
+                emotion = model.get_emotion(current_block).replace("<pad>", "")
+                sentence_emotions.append(emotion)
+                current_block = sentence.text
+        if current_block:
+            emotion = model.get_emotion(current_block).replace("<pad>", "")
+            sentence_emotions.append(emotion)
+        return sentence_emotions
 
-emotions_count = {}
-for emotion in emotions:
-    if emotion in emotions_count:
-        emotions_count[emotion] += 1
-    else:
-        emotions_count[emotion] = 1
+    # jak na razie po staremu
+    # dataframes = self.cleaning_text()
+    dataframes = df_list
+    sentence_dataframes = []
 
-emotions, counts = zip(*emotions_count.items())
+    for i in range(0, len(dataframes)):
+        df = dataframes[i].copy()
+        df["emotion"] = df["text"].apply(block)
+        sentence_dataframes.append(df)
 
-colors = []
-for i in range(0, len(emotions)):
-    colors.append(
-        np.random.rand(
-            3,
-        )
-    )
+    return sentence_dataframes
 
-plt.figure(figsize=(16, 9), dpi=300)
-plt.bar(emotions, counts, color=colors)
-plt.show()
+
+dataframes_block = getting_emotion_per_block(df_list)
+print(dataframes_block)
