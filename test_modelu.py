@@ -1,10 +1,14 @@
 from transformers import AutoTokenizer, AutoModelWithLMHead
 
 tokenizer = AutoTokenizer.from_pretrained(
-    "mrm8488/t5-base-finetuned-emotion", use_fast=False
+    "glombardo/misogynistic-statements-classification-model"
 )
 
-model = AutoModelWithLMHead.from_pretrained("mrm8488/t5-base-finetuned-emotion")
+model = AutoModelWithLMHead.from_pretrained(
+    "glombardo/misogynistic-statements-classification-model"
+)
+
+text = "Test text"
 
 
 def get_emotion(text):
@@ -15,8 +19,3 @@ def get_emotion(text):
     dec = [tokenizer.decode(ids) for ids in output]
     label = dec[0]
     return label
-
-
-text = "I am very happy today!"
-emotion = get_emotion(text).replace("<pad>", "")
-print(emotion)
