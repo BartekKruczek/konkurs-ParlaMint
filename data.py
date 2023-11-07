@@ -181,14 +181,18 @@ class Reading_files:
         current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         save_path = "./Plots"
 
+        # ładowanie danych
         dataframes_sentence = self.getting_emotion_per_block()
         dataframes_speech = self.getting_emotion()
+        datafames_misogynistic = self.checking_if_is_misogynistic()
 
         emotions_sentence = []
         covid_emotions_sentence = []
 
         emotions_speech = []
         covid_emotions_speech = []
+
+        misogynistic_list = []
 
         for wypowiedz in dataframes_sentence:
             emotions_sentence += list(wypowiedz["emotion"])
@@ -209,6 +213,9 @@ class Reading_files:
                     dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
                 ]
             )
+
+        for dataframe in datafames_misogynistic:
+            misogynistic_list += list(dataframe["misoginic"])
 
         # zliczanie emocji
         emotions_count_speech = {}
@@ -243,6 +250,14 @@ class Reading_files:
                 emotions_count_sentence_covid[emotion] = 1
         del emotions_count_speech_covid["Tak"]
 
+        # zliczanie mizoginistycznych wypowiedzi
+        misogynistic_count = {}
+        for misogynistic in misogynistic_list:
+            if misogynistic in misogynistic_count:
+                misogynistic_count[misogynistic] += 1
+            else:
+                misogynistic_count[misogynistic] = 1
+
         # rozpakowanie słowników
         speech_emotions, speech_count = zip(*emotions_count_speech.items())
         speech_emotions_covid, speech_count_covid = zip(
@@ -253,6 +268,8 @@ class Reading_files:
         sentence_emotions_covid, sentence_count_covid = zip(
             *emotions_count_sentence_covid.items()
         )
+
+        misogynic, misogynic_count = zip(*misogynistic_count.items())
 
         # generowanie kolorów
         speech_colors = []
