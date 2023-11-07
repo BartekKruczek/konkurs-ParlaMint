@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import datetime
 import spacy
 import numpy as np
+from deep_translator import GoogleTranslator
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 
 class Reading_files:
@@ -104,26 +106,6 @@ class Reading_files:
 
         return completed_dataframes
 
-    # def getting_emotion_per_sentence(self):
-    #     dataframes = self.cleaning_text()
-    #     sentence_dataframes = []
-
-    #     for i in range(0, len(dataframes)):
-    #         df = dataframes[i].copy()
-    #         df["sentences"] = df["text"].apply(
-    #             lambda line: [sent.text for sent in self.nlp(line).sents]
-    #         )
-    #         df["emotion"] = df["sentences"].apply(
-    #             lambda sentence_list: [
-    #                 model.get_emotion(str(sentence)).replace("<pad>", "")
-    #                 for sentence in sentence_list
-    #                 if len(sentence) < 512
-    #             ]
-    #         )
-    #         sentence_dataframes.append(df)
-
-    #     return sentence_dataframes
-
     def getting_emotion_per_block(self):
         # tu zlicza emocje w blokach
         def block(text):
@@ -156,6 +138,42 @@ class Reading_files:
             sentence_dataframes.append(df)
 
         return sentence_dataframes
+
+    def checking_if_is_misogynistic(self):
+        # inicializacja modelu
+        tokenizer = AutoTokenizer.from_pretrained(
+            "glombardo/misogynistic-statements-classification-model"
+        )
+        model = AutoModelForSequenceClassification.from_pretrained(
+            "glombardo/misogynistic-statements-classification-model"
+        )
+        # sprawdza czy wypowiedź jest mizoginistyczna, automatycznie tłumaczenie na hiszpański
+        dataframes_list = self.cleaning_text()
+        misogynistic_dataframes = []
+
+        for i in range(0, len(dataframes_list)):
+            df_copy = dataframes_list[i].copy()
+            text_from_df = df_copy["text"].to_string(index=False)
+
+            # tłumaczenie z wykorzystaniem GoogleTranslator
+            translated_text = GoogleTranslator(src="auto", target="es").translate(
+                text_from_df
+            )
+
+            input_ids = tokenizer.encode(text_from_df, return_tensors="pt")
+            output = model(input_ids)
+
+            if (
+                output.logits.softmax(dim=1)[0].tolist()[0]
+                > output.logits.softmax(dim=1)[0].tolist()[1]
+            ):
+                df_copy["misoginic"] = "No"
+                misogynistic_dataframes.append(df_copy)
+            else:
+                df_copy["misoginic"] = "Yes"
+                misogynistic_dataframes.append(df_copy)
+
+        return misogynistic_dataframes
 
     def draw_emotion_frequency(self):
         current_time = datetime.datetime.now()
