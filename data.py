@@ -1,4 +1,5 @@
 import model
+import new_model
 import os
 import pandas as pd
 import re
@@ -90,7 +91,7 @@ class Reading_files:
 
     def getting_emotion(self):
         """
-        Zwraca dataframe z emocjami. Przykład: df -> df
+        Zwraca listę dataframe z emocjami. Przykład: df -> df
         """
         dataframes = self.cleaning_text()
         completed_dataframes = []
@@ -160,7 +161,7 @@ class Reading_files:
                 text_from_df
             )
 
-            input_ids = tokenizer.encode(text_from_df, return_tensors="pt")
+            input_ids = tokenizer.encode(translated_text, return_tensors="pt")
             output = model(input_ids)
 
             if (
@@ -175,6 +176,22 @@ class Reading_files:
 
         return misogynistic_dataframes
 
+    def getting_emotion_new_model(self):
+        """Zwraca listę dataframów z emocjami, nowy model"""
+        dataframes = self.cleaning_text()
+        completed_dataframes = []
+
+        for i in range(0, len(dataframes)):
+            df = dataframes[i].copy()
+            text_from_df = df["text"].to_string(index=False)
+            translated_text = GoogleTranslator(src="auto", target="en").translate(
+                text_from_df
+            )
+            df["emotion"] = new_model.get_emotion(translated_text)
+            completed_dataframes.append(df)
+
+        return completed_dataframes
+
     def draw_emotion_frequency(self):
         current_time = datetime.datetime.now()
         current_time = current_time.replace(microsecond=0)
@@ -182,9 +199,10 @@ class Reading_files:
         save_path = "./Plots"
 
         # ładowanie danych
-        dataframes_sentence = self.getting_emotion_per_block()
-        dataframes_speech = self.getting_emotion()
+        # dataframes_sentence = self.getting_emotion_per_block()
+        # dataframes_speech = self.getting_emotion()
         datafames_misogynistic = self.checking_if_is_misogynistic()
+        dataframes_speech_new_model = self.getting_emotion_new_model()
 
         emotions_sentence = []
         covid_emotions_sentence = []
@@ -194,61 +212,74 @@ class Reading_files:
 
         misogynistic_list = []
 
-        for wypowiedz in dataframes_sentence:
-            emotions_sentence += list(wypowiedz["emotion"])
+        emotions_sentence_new_model = []
+        covid_emotions_sentence_new_model = []
 
-        for dataframe in dataframes_sentence:
-            covid_emotions_sentence += list(
-                dataframe.loc[
-                    dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
-                ]
-            )
+        # for wypowiedz in dataframes_sentence:
+        #     emotions_sentence += list(wypowiedz["emotion"])
 
-        for wypowiedz in dataframes_speech:
-            emotions_speech += list(wypowiedz["emotion"])
+        # for dataframe in dataframes_sentence:
+        #     covid_emotions_sentence += list(
+        #         dataframe.loc[
+        #             dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
+        #         ]
+        #     )
 
-        for dataframe in dataframes_speech:
-            covid_emotions_speech += list(
-                dataframe.loc[
-                    dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
-                ]
-            )
+        # for wypowiedz in dataframes_speech:
+        #     emotions_speech += list(wypowiedz["emotion"])
+
+        # for dataframe in dataframes_speech:
+        #     covid_emotions_speech += list(
+        #         dataframe.loc[
+        #             dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
+        #         ]
+        #     )
 
         for dataframe in datafames_misogynistic:
             misogynistic_list += list(dataframe["misoginic"])
 
+        for wypowiedz in dataframes_speech_new_model:
+            emotions_sentence_new_model += list(wypowiedz["emotion"])
+
+        for dataframe in dataframes_speech_new_model:
+            covid_emotions_sentence_new_model += list(
+                dataframe.loc[
+                    dataframe["Subcorpus"].str.contains("COVID", na=False), "emotion"
+                ]
+            )
+
         # zliczanie emocji
-        emotions_count_speech = {}
-        for emotion in emotions_speech:
-            if emotion in emotions_count_speech:
-                emotions_count_speech[emotion] += 1
-            else:
-                emotions_count_speech[emotion] = 1
-        del emotions_count_speech["Tak"]
+        # emotions_count_speech = {}
+        # for emotion in emotions_speech:
+        #     if emotion in emotions_count_speech:
+        #         emotions_count_speech[emotion] += 1
+        #     else:
+        #         emotions_count_speech[emotion] = 1
+        # del emotions_count_speech["Tak"]
 
-        emotions_count_speech_covid = {}
-        for emotion in covid_emotions_speech:
-            if emotion in emotions_count_speech_covid:
-                emotions_count_speech_covid[emotion] += 1
-            else:
-                emotions_count_speech_covid[emotion] = 1
-        del emotions_count_speech_covid["Tak"]
+        # emotions_count_speech_covid = {}
+        # for emotion in covid_emotions_speech:
+        #     if emotion in emotions_count_speech_covid:
+        #         emotions_count_speech_covid[emotion] += 1
+        #     else:
+        #         emotions_count_speech_covid[emotion] = 1
+        # del emotions_count_speech_covid["Tak"]
 
-        emotions_count_sentence = {}
-        for emotion in emotions_sentence:
-            if emotion in emotions_count_sentence:
-                emotions_count_sentence[emotion] += 1
-            else:
-                emotions_count_sentence[emotion] = 1
-        del emotions_count_speech_covid["Tak"]
+        # emotions_count_sentence = {}
+        # for emotion in emotions_sentence:
+        #     if emotion in emotions_count_sentence:
+        #         emotions_count_sentence[emotion] += 1
+        #     else:
+        #         emotions_count_sentence[emotion] = 1
+        # del emotions_count_speech_covid["Tak"]
 
-        emotions_count_sentence_covid = {}
-        for emotion in covid_emotions_sentence:
-            if emotion in emotions_count_sentence_covid:
-                emotions_count_sentence_covid[emotion] += 1
-            else:
-                emotions_count_sentence_covid[emotion] = 1
-        del emotions_count_speech_covid["Tak"]
+        # emotions_count_sentence_covid = {}
+        # for emotion in covid_emotions_sentence:
+        #     if emotion in emotions_count_sentence_covid:
+        #         emotions_count_sentence_covid[emotion] += 1
+        #     else:
+        #         emotions_count_sentence_covid[emotion] = 1
+        # del emotions_count_speech_covid["Tak"]
 
         # zliczanie mizoginistycznych wypowiedzi
         misogynistic_count = {}
@@ -258,81 +289,109 @@ class Reading_files:
             else:
                 misogynistic_count[misogynistic] = 1
 
-        # rozpakowanie słowników
-        speech_emotions, speech_count = zip(*emotions_count_speech.items())
-        speech_emotions_covid, speech_count_covid = zip(
-            *emotions_count_speech_covid.items()
-        )
+        # zliczanie emocji nowy model
+        emotions_count_sentence_new_model = {}
+        for emotion in emotions_sentence_new_model:
+            if emotion in emotions_count_sentence_new_model:
+                emotions_count_sentence_new_model[emotion] += 1
+            else:
+                emotions_count_sentence_new_model[emotion] = 1
 
-        sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
-        sentence_emotions_covid, sentence_count_covid = zip(
-            *emotions_count_sentence_covid.items()
-        )
+        emotions_count_sentence_covid_new_model = {}
+        for emotion in covid_emotions_sentence_new_model:
+            if emotion in emotions_count_sentence_covid_new_model:
+                emotions_count_sentence_covid_new_model[emotion] += 1
+            else:
+                emotions_count_sentence_covid_new_model[emotion] = 1
+
+        # rozpakowanie słowników
+        # speech_emotions, speech_count = zip(*emotions_count_speech.items())
+        # speech_emotions_covid, speech_count_covid = zip(
+        #     *emotions_count_speech_covid.items()
+        # )
+
+        # sentence_emotions, sentence_count = zip(*emotions_count_sentence.items())
+        # sentence_emotions_covid, sentence_count_covid = zip(
+        #     *emotions_count_sentence_covid.items()
+        # )
 
         misogynic, misogynic_count = zip(*misogynistic_count.items())
 
+        speech_emotions_new_model, speech_count_new_model = zip(
+            *emotions_count_sentence_new_model.items()
+        )
+        speech_emotions_covid_new_model, speech_count_covid_new_model = zip(
+            *emotions_count_sentence_covid_new_model.items()
+        )
+
         # generowanie kolorów
-        speech_colors = []
-        for i in range(0, len(speech_emotions)):
-            speech_colors.append(
-                np.random.rand(
-                    3,
-                )
-            )
+        # speech_colors = []
+        # for i in range(0, len(speech_emotions)):
+        #     speech_colors.append(
+        #         np.random.rand(
+        #             3,
+        #         )
+        #     )
 
-        speech_colors_covid = []
-        for i in range(0, len(speech_emotions_covid)):
-            speech_colors_covid.append(
-                np.random.rand(
-                    3,
-                )
-            )
+        # speech_colors_covid = []
+        # for i in range(0, len(speech_emotions_covid)):
+        #     speech_colors_covid.append(
+        #         np.random.rand(
+        #             3,
+        #         )
+        #     )
 
-        sentence_colors = []
-        for i in range(0, len(sentence_emotions)):
-            sentence_colors.append(
-                np.random.rand(
-                    3,
-                )
-            )
+        # sentence_colors = []
+        # for i in range(0, len(sentence_emotions)):
+        #     sentence_colors.append(
+        #         np.random.rand(
+        #             3,
+        #         )
+        #     )
 
-        sentence_colors_covid = []
-        for i in range(0, len(sentence_emotions_covid)):
-            sentence_colors_covid.append(
-                np.random.rand(
-                    3,
-                )
-            )
+        # sentence_colors_covid = []
+        # for i in range(0, len(sentence_emotions_covid)):
+        #     sentence_colors_covid.append(
+        #         np.random.rand(
+        #             3,
+        #         )
+        #     )
 
         # Tworzenie subplots
         plt.figure(figsize=(16, 9), dpi=600)
         plt.subplots_adjust(hspace=0.5)
 
         plt.subplot(1, 2, 1)
-        plt.bar(speech_emotions, speech_count, color=speech_colors)
+        plt.bar(speech_emotions_new_model, speech_count_new_model)
         plt.xlabel("Emotion (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion Frequency Distribution (Per Speech)")
 
         plt.subplot(1, 2, 2)
-        plt.bar(speech_emotions_covid, speech_count_covid, color=speech_colors_covid)
+        plt.bar(speech_emotions_covid_new_model, speech_count_covid_new_model)
         plt.xlabel("Emotion COVID (Per Speech)")
         plt.ylabel("Frequency")
         plt.title("Emotion COVID Frequency Distribution (Per Speech)")
 
-        plt.subplot(2, 2, 3)
-        plt.bar(sentence_emotions, sentence_count, color=sentence_colors)
-        plt.xlabel("Emotion (Per Block)")
-        plt.ylabel("Frequency")
-        plt.title("Emotion Frequency Distribution (Per Block)")
+        # plt.subplot(2, 2, 3)
+        # plt.bar(sentence_emotions, sentence_count, color=sentence_colors)
+        # plt.xlabel("Emotion (Per Block)")
+        # plt.ylabel("Frequency")
+        # plt.title("Emotion Frequency Distribution (Per Block)")
 
-        plt.subplot(2, 2, 4)
-        plt.bar(
-            sentence_emotions_covid, sentence_count_covid, color=sentence_colors_covid
-        )
-        plt.xlabel("Emotion COVID (Per Block)")
+        # plt.subplot(2, 2, 4)
+        # plt.bar(
+        #     sentence_emotions_covid, sentence_count_covid, color=sentence_colors_covid
+        # )
+        # plt.xlabel("Emotion COVID (Per Block)")
+        # plt.ylabel("Frequency")
+        # plt.title("Emotion COVID Frequency Distribution (Per Block)")
+
+        plt.subplot(2, 2, 3)
+        plt.bar(misogynic, misogynic_count)
+        plt.xlabel("Misogynic")
         plt.ylabel("Frequency")
-        plt.title("Emotion COVID Frequency Distribution (Per Block)")
+        plt.title("Misogynic Frequency Distribution")
 
         if save_path:
             if not os.path.exists(save_path):
