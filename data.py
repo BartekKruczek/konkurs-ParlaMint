@@ -184,11 +184,15 @@ class Reading_files:
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
             text_from_df = df["text"].to_string(index=False)
-            translated_text = GoogleTranslator(src="auto", target="en").translate(
-                text_from_df
-            )
-            df["emotion"] = new_model.get_emotion(translated_text)
-            completed_dataframes.append(df)
+            if len(text_from_df) < 4998:
+                translated_text = GoogleTranslator(src="auto", target="en").translate(
+                    text_from_df
+                )
+                df["emotion"] = new_model.get_emotion(translated_text)
+                completed_dataframes.append(df)
+            else:
+                df["emotion"] = "NaN"
+                completed_dataframes.append(df)
 
         return completed_dataframes
 
