@@ -23,6 +23,7 @@ class Reading_files:
         """
         Zwraca listę dataframe'ów, gdzie każdy dataframe to jeden plik tekstowy -> kolumny: speech_id, text. Przykład: [df1, df2, df3, ...]
         """
+        print("Starting reading txt files...")
         dataframes = []
         rest_metadata = []
         df = pd.DataFrame()
@@ -50,6 +51,7 @@ class Reading_files:
         """
         Tworzenie dataframe'a z dodatkowymi informacjami o pliku tekstowym. Przykład: [df1, df2, df3, ...] -> df
         """
+        # print("Starting extracting more info...")
         temporary_df = pd.DataFrame()
         for root, dir, files in os.walk(old_root):
             for file in files:
@@ -64,6 +66,7 @@ class Reading_files:
         """
         Łączy wszystkie dataframe'y w jeden. Przykład: [df1, df2, df3, ...] -> df
         """
+        print("Starting combining all to one dataframe...")
         dataframes, rest_metadata = self.read_txt_file()
         combined_df = pd.DataFrame()
         combined_dataframes = []
@@ -76,6 +79,7 @@ class Reading_files:
         return combined_dataframes
 
     def cleaning_text(self):
+        print("Starting cleaning text...")
         dataframes = self.combining_all_to_one_dataframe()
         cleaned_dataframes = []
 
@@ -93,6 +97,7 @@ class Reading_files:
         """
         Zwraca listę dataframe z emocjami. Przykład: df -> df
         """
+        print("Starting getting emotion...")
         dataframes = self.cleaning_text()
         completed_dataframes = []
 
@@ -108,6 +113,8 @@ class Reading_files:
         return completed_dataframes
 
     def getting_emotion_per_block(self):
+        print("Starting getting emotion per block...")
+
         # tu zlicza emocje w blokach
         def block(text):
             xyz = self.nlp(text)
@@ -141,6 +148,7 @@ class Reading_files:
         return sentence_dataframes
 
     def checking_if_is_misogynistic(self):
+        print("Starting checking if is misogynistic...")
         # inicializacja modelu
         tokenizer = AutoTokenizer.from_pretrained(
             "glombardo/misogynistic-statements-classification-model"
@@ -178,22 +186,34 @@ class Reading_files:
 
     def getting_emotion_new_model(self):
         """Zwraca listę dataframów z emocjami, nowy model"""
+        print("Starting getting emotion new model...")
         dataframes = self.cleaning_text()
         completed_dataframes = []
 
+        # for i in range(0, len(dataframes)):
+        #     df = dataframes[i].copy()
+        #     text_from_df = df["text"].to_string(index=False)
+        #     if len(text_from_df) < 4999:
+        #         translated_text = GoogleTranslator(src="auto", target="en").translate(
+        #             text_from_df
+        #         )
+        #         if translated_text < 4999:
+        #             df["emotion"] = new_model.get_emotion(translated_text)
+        #             completed_dataframes.append(df)
+        #         else:
+        #             df["emotion"] = "NaN"
+        #             completed_dataframes.append(df)
+
+        # TO DZIAŁA!!!
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            text_from_df = df["text"].to_string(index=False)
-            if len(text_from_df) < 4999:
-                translated_text = GoogleTranslator(src="auto", target="en").translate(
-                    text_from_df
-                )
-                if translated_text < 4999:
-                    df["emotion"] = new_model.get_emotion(translated_text)
-                    completed_dataframes.append(df)
-                else:
-                    df["emotion"] = "NaN"
-                    completed_dataframes.append(df)
+            text_from_df = "".join(df["text"].to_string(index=False).strip("\n"))
+            # print(text_from_df)
+            # print(len(text_from_df))
+            # print(len(dataframes))
+            print("Calculating emotion for speech number: {}".format(i + 1))
+            df["emotion"] = new_model.get_emotion(text_from_df)
+            completed_dataframes.append(df)
 
         return completed_dataframes
 
