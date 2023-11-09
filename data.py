@@ -193,8 +193,18 @@ class Reading_files:
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
             text_from_df = df["text"].to_string(index=False)
+            print(type(text_from_df))
             df["emotion"] = new_model.get_emotion(text_from_df)
             completed_dataframes.append(df)
+
+        # podejście nr 2
+        # for i in range(0, len(dataframes)):
+        #     df = dataframes[i].copy()
+        #     for index, row in df.iterrows():
+        #         text_from_df = row["text"]
+        #         emotion = new_model.get_emotion(text_from_df)
+        #         df.at[index, "emotion"] = emotion
+        #     completed_dataframes.append(df)
 
         # TO DZIAŁA!!!
         # list_of_texts = []
