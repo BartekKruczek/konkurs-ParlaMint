@@ -190,30 +190,30 @@ class Reading_files:
         dataframes = self.cleaning_text()
         completed_dataframes = []
 
-        # for i in range(0, len(dataframes)):
-        #     df = dataframes[i].copy()
-        #     text_from_df = df["text"].to_string(index=False)
-        #     if len(text_from_df) < 4999:
-        #         translated_text = GoogleTranslator(src="auto", target="en").translate(
-        #             text_from_df
-        #         )
-        #         if translated_text < 4999:
-        #             df["emotion"] = new_model.get_emotion(translated_text)
-        #             completed_dataframes.append(df)
-        #         else:
-        #             df["emotion"] = "NaN"
-        #             completed_dataframes.append(df)
-
-        # TO DZIAŁA!!!
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            text_from_df = "".join(df["text"].to_string(index=False).strip("\n"))
-            # print(text_from_df)
-            # print(len(text_from_df))
-            # print(len(dataframes))
-            print("Calculating emotion for speech number: {}".format(i + 1))
+            text_from_df = df["text"].to_string(index=False)
             df["emotion"] = new_model.get_emotion(text_from_df)
             completed_dataframes.append(df)
+
+        # TO DZIAŁA!!!
+        # list_of_texts = []
+        # for i in range(0, len(dataframes)):
+        #     df = dataframes[i].copy()
+        #     temporary_list = []
+        #     text_from_df = "".join(df["text"].to_string(index=False).strip("\n"))
+        #     temporary_list.append(text_from_df)
+        #     list_of_texts.append(temporary_list)
+        # print(text_from_df)
+        # print(len(text_from_df))
+
+        # print(list_of_texts)
+        # print(len(dataframes))
+        # print(len(list_of_texts))
+
+        # print("Calculating emotion for speech number: {}".format(i + 1))
+        # df["emotion"] = new_model.get_emotion(text_from_df)
+        # completed_dataframes.append(df)
 
         return completed_dataframes
 
