@@ -192,38 +192,13 @@ class Reading_files:
 
         for i in range(0, len(dataframes)):
             df = dataframes[i].copy()
-            text_from_df = df["text"].to_string(index=False)
-            print(type(text_from_df))
-            df["emotion"] = new_model.get_emotion(text_from_df)
+            # text_from_df = df["text"].to_string(index=False)
+            # print(type(text_from_df))
+            # df["emotion"] = new_model.get_emotion(text_from_df) # tutaj przekazujemy cały blok tekstu zamiast jednej linijki :(
+            df["emotion"] = df["text"].apply(
+                lambda line: new_model.get_emotion(line) if len(line) < 512 else "NaN"
+            )
             completed_dataframes.append(df)
-
-        # podejście nr 2
-        # for i in range(0, len(dataframes)):
-        #     df = dataframes[i].copy()
-        #     for index, row in df.iterrows():
-        #         text_from_df = row["text"]
-        #         emotion = new_model.get_emotion(text_from_df)
-        #         df.at[index, "emotion"] = emotion
-        #     completed_dataframes.append(df)
-
-        # TO DZIAŁA!!!
-        # list_of_texts = []
-        # for i in range(0, len(dataframes)):
-        #     df = dataframes[i].copy()
-        #     temporary_list = []
-        #     text_from_df = "".join(df["text"].to_string(index=False).strip("\n"))
-        #     temporary_list.append(text_from_df)
-        #     list_of_texts.append(temporary_list)
-        # print(text_from_df)
-        # print(len(text_from_df))
-
-        # print(list_of_texts)
-        # print(len(dataframes))
-        # print(len(list_of_texts))
-
-        # print("Calculating emotion for speech number: {}".format(i + 1))
-        # df["emotion"] = new_model.get_emotion(text_from_df)
-        # completed_dataframes.append(df)
 
         return completed_dataframes
 
