@@ -15,10 +15,10 @@ def main():
     file_reading = Reading_files(path=path)
 
     # test
-    file_reading.getting_emotion_new_model()
+    # file_reading.getting_emotion_new_model()
 
     # rysoawnie wykresu częstości występowania emocji
-    # file_reading.draw_emotion_frequency()
+    file_reading.draw_emotion_frequency()
 
     print("Done!", file=open("logs.txt", "a", encoding="utf-8"))
 
