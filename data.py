@@ -411,3 +411,12 @@ class Reading_files:
                 "emotion_frequency_plot_{}.png".format(current_time),
             )
             plt.savefig(save_file)
+
+    def saving_to_csv(self):
+        dataframes = self.getting_emotion_new_model()
+        # dataframes = self.checking_if_is_misogynistic()
+
+        with pd.ExcelWriter("output_file.xlsx") as writer:
+            for i, df in enumerate(dataframes):
+                sheet_name = f"Sheet_{i+1}"
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
