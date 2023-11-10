@@ -2,7 +2,11 @@ from transformers import pipeline
 from deep_translator import GoogleTranslator
 
 classifier = pipeline(
-    task="text-classification", model="SamLowe/roberta-base-go_emotions", top_k=None
+    task="text-classification",
+    model="SamLowe/roberta-base-go_emotions",
+    top_k=None,
+    max_length=5000,
+    truncation=True,
 )
 
 
