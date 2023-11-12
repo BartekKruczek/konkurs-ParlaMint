@@ -1,6 +1,7 @@
 import new_model
 from deep_translator import GoogleTranslator
 import pandas as pd
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 # test wstępny
 # sentences = "Serdecznie witam pierwszą osobę w państwie - pana prezydenta Rzeczypospolitej Polskiej. [[Długotrwałe oklaski]] Kłaniam się bardzo nisko i dziękuję za przybycie wszystkim dostojnym gościom. Swoją obecnością uświetniacie państwo tę inaugurację. Wielkie to dla nas uhonorowanie. [[Oklaski]] Pozdrawiam szanownych posłów. Witam słuchających w mediach. [[Oklaski]] Proszę o powstanie i uczczenie chwilą ciszy zmarłych, którzy służyli ojczyźnie. [[Chwila ciszy]] Dziękuję bardzo. Proszę prezydenta Rzeczypospolitej Andrzeja Dudę o wygłoszenie orędzia na 1. posiedzeniu Sejmu VIII kadencji."
@@ -20,6 +21,9 @@ df1 = pd.DataFrame(
         ]
     }
 )
+df1.loc[len(df1)] = [
+    "Proszę o powstanie i uczczenie chwilą ciszy zmarłych, którzy służyli ojczyźnie. [[Chwila ciszy]]"
+]
 df2 = pd.DataFrame(
     {
         "text": [
@@ -34,46 +38,69 @@ test_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pul
 df3 = pd.DataFrame({"text": [test_text]})
 dataframes.append(df3)
 
+print(dataframes[0])
 
-def getting_emotion_new_model(self):
-    """Zwraca listę dataframów z emocjami, nowy model"""
-    # dataframes = self.cleaning_text()
-    completed_dataframes = []
 
-    for i in range(0, len(dataframes)):
-        df = dataframes[i].copy()
-        text_from_df = ""
-        text_from_df = df["text"].to_string(index=False)
-        # print(len(text_from_df))
-        # print(text_from_df)
-        if len(text_from_df) < 4999:
-            # translated_text = GoogleTranslator(src="auto", target="en").translate(
-            #     text_from_df
-            # )
-            df["emotion"] = new_model.get_emotion(text_from_df)
-            completed_dataframes.append(df)
+def checking_if_is_misogynistic():
+    print("Starting checking if is misogynistic...")
+    # inicializacja modelu
+    tokenizer = AutoTokenizer.from_pretrained(
+        "glombardo/misogynistic-statements-classification-model"
+    )
+    model = AutoModelForSequenceClassification.from_pretrained(
+        "glombardo/misogynistic-statements-classification-model"
+    )
+    # sprawdza czy wypowiedź jest mizoginistyczna, automatycznie tłumaczenie na hiszpański
+    dataframes_list = dataframes
+    misogynistic_dataframes = []
+
+    for i in range(0, len(dataframes_list)):
+        df_copy = dataframes_list[i].copy()
+        text_from_df = df_copy["text"].to_string(index=False)
+
+        # tłumaczenie z wykorzystaniem GoogleTranslator
+        translated_text = GoogleTranslator(src="auto", target="es").translate(
+            text_from_df
+        )
+
+        input_ids = tokenizer.encode(translated_text, return_tensors="pt")
+        output = model(input_ids)
+
+        if (
+            output.logits.softmax(dim=1)[0].tolist()[0]
+            > output.logits.softmax(dim=1)[0].tolist()[1]
+        ):
+            df_copy["misoginic"] = "No"
+            misogynistic_dataframes.append(df_copy)
         else:
-            df["emotion"] = "NaN"
-            completed_dataframes.append(df)
+            df_copy["misoginic"] = "Yes"
+            misogynistic_dataframes.append(df_copy)
+        print("Calculated misogynistic for speech {}".format(i + 1))
 
-    return completed_dataframes
+    return misogynistic_dataframes
 
 
-def test_getting_emotion_new_model(self):
+def test_getting_emotion_new_model():
     completed_dataframes = []
 
     for i in range(0, len(dataframes)):
         df = dataframes[i].copy()
         df["emotion"] = df["text"].apply(
-            lambda line: new_model.get_emotion(
-                GoogleTranslator(source="auto", target="en").translate(line)
-            )
-            if len(line) < 4999
-            else "NaN"
+            lambda line: new_model.get_emotion(line) if len(line) < 2048 else "NaN"
         )
         completed_dataframes.append(df)
 
     return completed_dataframes
 
 
-print(getting_emotion_new_model(dataframes))
+def saving_to_csv():
+    dataframes = test_getting_emotion_new_model()
+    # dataframes = checking_if_is_misogynistic()
+
+    with pd.ExcelWriter("output_file_test.xlsx") as writer:
+        for i, df in enumerate(dataframes):
+            sheet_name = f"Sheet_{i+1}"
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+
+saving_to_csv()
