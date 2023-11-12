@@ -422,10 +422,14 @@ class Reading_files:
 
             dataframes = self.getting_emotion_new_model()
 
-            with pd.ExcelWriter("output_file_emocje_{}".format(current_time)) as writer:
+            save_path = os.path.join(
+                excels_path, "output_file_emocje_{}".format(current_time)
+            )
+            with pd.ExcelWriter(save_path) as writer:
                 for i, df in enumerate(dataframes):
                     sheet_name = f"Sheet_{i+1}"
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
+
         elif pomocnicza == 2:
             current_time = datetime.datetime.now()
             current_time = current_time.replace(microsecond=0)
@@ -433,7 +437,10 @@ class Reading_files:
 
             dataframes = self.checking_if_is_misogynistic()
 
-            with pd.ExcelWriter("output_file_miz_{}".format(current_time)) as writer:
+            save_path = os.path.join(
+                excels_path, "output_file_emocje_{}".format(current_time)
+            )
+            with pd.ExcelWriter(save_path) as writer:
                 for i, df in enumerate(dataframes):
                     sheet_name = f"Sheet_{i+1}"
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
