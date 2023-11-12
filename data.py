@@ -181,6 +181,7 @@ class Reading_files:
             else:
                 df_copy["misoginic"] = "Yes"
                 misogynistic_dataframes.append(df_copy)
+            print("Calculated misogynistic for speech {}".format(i + 1))
 
         return misogynistic_dataframes
 
@@ -199,6 +200,7 @@ class Reading_files:
                 lambda line: new_model.get_emotion(line) if len(line) < 512 else "NaN"
             )
             completed_dataframes.append(df)
+            print("Calculated emotion for speech {}".format(i + 1))
 
         return completed_dataframes
 
