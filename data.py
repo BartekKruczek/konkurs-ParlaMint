@@ -194,7 +194,7 @@ class Reading_files:
             # print(type(text_from_df))
             # df["emotion"] = new_model.get_emotion(text_from_df) # tutaj przekazujemy cały blok tekstu zamiast jednej linijki :(
             df["emotion"] = df["text"].apply(
-                lambda line: new_model.get_emotion(line) if len(line) < 1024 else "NaN"
+                lambda line: new_new_model.get_emotion(line) if len(line) < 1024 else "NaN"
             )
             completed_dataframes.append(df)
 
