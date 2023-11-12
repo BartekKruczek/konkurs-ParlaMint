@@ -10,7 +10,7 @@ def main():
     print("Please wait...")
 
     # wczytywania plików
-    path = "./ParlaMint-PL.txt"
+    path = "./ParlaMint-PL2.txt"
     file_reading = Reading_files(path=path)
 
     # test
