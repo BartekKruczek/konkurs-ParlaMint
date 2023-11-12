@@ -194,7 +194,7 @@ class Reading_files:
             # print(type(text_from_df))
             # df["emotion"] = new_model.get_emotion(text_from_df) # tutaj przekazujemy cały blok tekstu zamiast jednej linijki :(
             df["emotion"] = df["text"].apply(
-                lambda line: new_model.get_emotion(line) if len(line) < 2048 else "NaN"
+                lambda line: new_model.get_emotion(line) if len(line) < 1024 else "NaN"
             )
             completed_dataframes.append(df)
 
@@ -423,7 +423,7 @@ class Reading_files:
             dataframes = self.getting_emotion_new_model()
 
             save_path = os.path.join(
-                excels_path, "output_file_emocje_{}".format(current_time)
+                excels_path, "output_file_emocje_{}.csv".format(current_time)
             )
             with pd.ExcelWriter(save_path) as writer:
                 for i, df in enumerate(dataframes):
@@ -438,7 +438,7 @@ class Reading_files:
             dataframes = self.checking_if_is_misogynistic()
 
             save_path = os.path.join(
-                excels_path, "output_file_emocje_{}".format(current_time)
+                excels_path, "output_file_emocje_{}.csv".format(current_time)
             )
             with pd.ExcelWriter(save_path) as writer:
                 for i, df in enumerate(dataframes):
