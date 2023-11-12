@@ -148,7 +148,6 @@ class Reading_files:
         return sentence_dataframes
 
     def checking_if_is_misogynistic(self):
-        print("Starting checking if is misogynistic...")
         # inicializacja modelu
         tokenizer = AutoTokenizer.from_pretrained(
             "glombardo/misogynistic-statements-classification-model"
@@ -181,13 +180,11 @@ class Reading_files:
             else:
                 df_copy["misoginic"] = "Yes"
                 misogynistic_dataframes.append(df_copy)
-            print("Calculated misogynistic for speech {}".format(i + 1))
 
         return misogynistic_dataframes
 
     def getting_emotion_new_model(self):
         """Zwraca listę dataframów z emocjami, nowy model"""
-        print("Starting getting emotion new model...")
         dataframes = self.cleaning_text()
         completed_dataframes = []
 
@@ -197,10 +194,9 @@ class Reading_files:
             # print(type(text_from_df))
             # df["emotion"] = new_model.get_emotion(text_from_df) # tutaj przekazujemy cały blok tekstu zamiast jednej linijki :(
             df["emotion"] = df["text"].apply(
-                lambda line: new_model.get_emotion(line) if len(line) < 512 else "NaN"
+                lambda line: new_model.get_emotion(line) if len(line) < 2048 else "NaN"
             )
             completed_dataframes.append(df)
-            print("Calculated emotion for speech {}".format(i + 1))
 
         return completed_dataframes
 
@@ -414,11 +410,30 @@ class Reading_files:
             )
             plt.savefig(save_file)
 
-    def saving_to_csv(self):
-        dataframes = self.getting_emotion_new_model()
-        # dataframes = self.checking_if_is_misogynistic()
+    def saving_to_csv(self, pomocnicza=None):
+        excels_path = "./Excels"
+        if not os.path.exists(excels_path):
+            os.makedirs(excels_path)
 
-        with pd.ExcelWriter("output_file.xlsx") as writer:
-            for i, df in enumerate(dataframes):
-                sheet_name = f"Sheet_{i+1}"
-                df.to_excel(writer, sheet_name=sheet_name, index=False)
+        if pomocnicza == 1:
+            current_time = datetime.datetime.now()
+            current_time = current_time.replace(microsecond=0)
+            current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
+
+            dataframes = self.getting_emotion_new_model()
+
+            with pd.ExcelWriter("output_file_emocje_{}".format(current_time)) as writer:
+                for i, df in enumerate(dataframes):
+                    sheet_name = f"Sheet_{i+1}"
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
+        elif pomocnicza == 2:
+            current_time = datetime.datetime.now()
+            current_time = current_time.replace(microsecond=0)
+            current_time = current_time.strftime("%Y-%m-%d_%H-%M-%S")
+
+            dataframes = self.checking_if_is_misogynistic()
+
+            with pd.ExcelWriter("output_file_miz_{}".format(current_time)) as writer:
+                for i, df in enumerate(dataframes):
+                    sheet_name = f"Sheet_{i+1}"
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
