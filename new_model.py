@@ -14,7 +14,7 @@ def get_emotion(text):
     translated_sentence = GoogleTranslator(source="auto", target="en").translate(text)
     model_outputs = classifier(translated_sentence)
 
-    if len(translated_sentence) < 4999:
+    if len(translated_sentence) < 2048:
         return model_outputs[0][0]["label"]
     else:
         return "NaN"
