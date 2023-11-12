@@ -1,6 +1,5 @@
 from data import Reading_files
 from plotting_data import Plotting_data
-import sys
 
 """
 Jak na razie przetestowane dla jednego pliku. Dodać funkcjonalość dla wielu plików. Naprawić wyświetlanie emocji "anger". Pomyśleć nad innymi sposobami wizualizacji danych.
@@ -8,7 +7,7 @@ Jak na razie przetestowane dla jednego pliku. Dodać funkcjonalość dla wielu p
 
 
 def main():
-    print("Please wait...", file=open("logs.txt", "a", encoding="utf-8"))
+    print("Please wait...")
 
     # wczytywania plików
     path = "./ParlaMint-PL.txt"
@@ -22,10 +21,7 @@ def main():
 
     file_reading.saving_to_csv()
 
-    print("Done!", file=open("logs.txt", "a", encoding="utf-8"))
-
-    sys.stdout = open("logs.txt", "a", encoding="utf-8")
-    sys.stdout.close()
+    print("Done!")
 
 
 try:
