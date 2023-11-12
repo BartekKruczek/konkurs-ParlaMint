@@ -19,7 +19,10 @@ def main():
     # rysoawnie wykresu częstości występowania emocji
     # file_reading.draw_emotion_frequency()
 
-    file_reading.saving_to_csv()
+    # wartość jeden = liczy emocje, wartość dwa = liczy mizoginię
+    pomocnicza = 1
+
+    file_reading.saving_to_csv(pomocnicza=pomocnicza)
 
     print("Done!")
 
