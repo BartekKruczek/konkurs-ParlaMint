@@ -194,7 +194,7 @@ class Reading_files:
             # print(type(text_from_df))
             # df["emotion"] = new_model.get_emotion(text_from_df) # tutaj przekazujemy cały blok tekstu zamiast jednej linijki :(
             df["emotion"] = df["text"].apply(
-                lambda line: new_new_model.get_emotion(line) if len(line) < 1024 else "NaN"
+                lambda line: new_model.get_emotion(line) if len(line) < 1024 else "NaN"
             )
             completed_dataframes.append(df)
 
@@ -423,9 +423,9 @@ class Reading_files:
             dataframes = self.getting_emotion_new_model()
 
             save_path = os.path.join(
-                excels_path, "output_file_emocje_{}.csv".format(current_time)
+                excels_path, "output_file_emocje_{}.xlsx".format(current_time)
             )
-            with pd.ExcelWriter(save_path) as writer:
+            with pd.ExcelWriter(save_path, engine="openpyxl") as writer:
                 for i, df in enumerate(dataframes):
                     sheet_name = f"Sheet_{i+1}"
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
@@ -438,9 +438,9 @@ class Reading_files:
             dataframes = self.checking_if_is_misogynistic()
 
             save_path = os.path.join(
-                excels_path, "output_file_emocje_{}.csv".format(current_time)
+                excels_path, "output_file_emocje_{}.xlsx".format(current_time)
             )
-            with pd.ExcelWriter(save_path) as writer:
+            with pd.ExcelWriter(save_path, engine="openpyxl") as writer:
                 for i, df in enumerate(dataframes):
                     sheet_name = f"Sheet_{i+1}"
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
