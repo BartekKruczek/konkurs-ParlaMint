@@ -163,7 +163,7 @@ def war(path):
     fig.add_trace(bar_overall.data[0], row=2, col=1)
 
     # Zmień rozmiar obrazu na 1920x1080 pikseli
-    fig.update_layout(width=1920, height=1080, title_font_size=100)
+    fig.update_layout(width=1920, height=1080)
 
     # Dostosuj tytuły osi i pogrubienie tekstu
     fig.update_xaxes(title_text="Emotions", tickfont=dict(size=30))
