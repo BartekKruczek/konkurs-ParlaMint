@@ -35,33 +35,41 @@ fig = make_subplots(
 )
 
 # Utwórz wykres słupkowy dla emocji w przypadku "COVID"
-fig.add_trace(
-    px.bar(
-        covid_filtered_emotions.value_counts(),
-        x=covid_filtered_emotions.value_counts().index,
-        y=covid_filtered_emotions.value_counts().values,
-        labels={"x": "Emotions", "y": "Count"},
-        title="Top 6 Emotions for COVID",
-    ).data[0],
-    row=1,
-    col=1,
+bar_covid = px.bar(
+    covid_filtered_emotions.value_counts(),
+    x=covid_filtered_emotions.value_counts().index,
+    y=covid_filtered_emotions.value_counts().values,
+    labels={"x": "Emotions", "y": "Count"},
+    title="Top 6 Emotions for COVID",
+).update_traces(
+    textposition="outside",
+    text=covid_filtered_emotions.value_counts().values,
+    hoverinfo="x+text",
 )
 
 # Utwórz wykres słupkowy dla emocji ogólnie
-fig.add_trace(
-    px.bar(
-        filtered_emotions.value_counts(),
-        x=filtered_emotions.value_counts().index,
-        y=filtered_emotions.value_counts().values,
-        labels={"x": "Emotions", "y": "Count"},
-        title="Top 6 Emotions Overall",
-    ).data[0],
-    row=2,
-    col=1,
+bar_overall = px.bar(
+    filtered_emotions.value_counts(),
+    x=filtered_emotions.value_counts().index,
+    y=filtered_emotions.value_counts().values,
+    labels={"x": "Emotions", "y": "Count"},
+    title="Top 6 Emotions Overall",
+).update_traces(
+    textposition="outside",
+    text=filtered_emotions.value_counts().values,
+    hoverinfo="x+text",
 )
+
+# Dodaj wykresy do subplotu
+fig.add_trace(bar_covid.data[0], row=1, col=1)
+fig.add_trace(bar_overall.data[0], row=2, col=1)
 
 # Zmień rozmiar obrazu na 1920x1080 pikseli
 fig.update_layout(width=1920, height=1080)
+
+# Dostosuj tytuły osi
+fig.update_xaxes(title_text="Emotions", row=2, col=1)
+fig.update_yaxes(title_text="Count", row=2, col=1)
 
 # Zapisz wykres jako plik JPG
 fig.write_image("emotions_chart_subplot.jpg", format="jpg")
