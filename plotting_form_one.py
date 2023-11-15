@@ -38,7 +38,10 @@ def covid(path):
     fig = make_subplots(
         rows=2,
         cols=1,
-        subplot_titles=["Top 6 Emotions for WAR", "Top 6 Emotions Overall"],
+        subplot_titles=[
+            "<b>Top 6 Emotions for COVID</b>",
+            "<b>Top 6 Emotions Overall</b>",
+        ],
     )
 
     # Utwórz wykres słupkowy dla emocji w przypadku "COVID"
@@ -74,9 +77,18 @@ def covid(path):
     # Zmień rozmiar obrazu na 1920x1080 pikseli
     fig.update_layout(width=1920, height=1080)
 
-    # Dostosuj tytuły osi
-    fig.update_xaxes(title_text="Emotions", row=2, col=1)
-    fig.update_yaxes(title_text="Count", row=2, col=1)
+    # Dostosuj tytuły osi i pogrubienie tekstu
+    fig.update_xaxes(title_text="Emotions", tickfont=dict(size=30))
+    fig.update_yaxes(title_text="Count", tickfont=dict(size=18))
+
+    # Dostosuj tytuły subplotów
+    fig.update_xaxes(title_text="Emotions", row=2, col=1, tickfont=dict(size=30))
+    fig.update_yaxes(title_text="Count", row=2, col=1, tickfont=dict(size=18))
+
+    # Dostosuj tytuły subplotów
+    fig.update_annotations(
+        font=dict(size=100), selector=dict(title="<b>Top 6 Emotions for COVID</b>")
+    )
 
     # Zapisz wykres jako plik JPG
     fig.write_image("emotions_chart_subplot_covid.jpg", format="jpg")
@@ -114,7 +126,10 @@ def war(path):
     fig = make_subplots(
         rows=2,
         cols=1,
-        subplot_titles=["Top 6 Emotions for War", "Top 6 Emotions Overall"],
+        subplot_titles=[
+            "<b>Top 6 Emotions for War</b>",
+            "<b>Top 6 Emotions Overall</b>",
+        ],
     )
 
     # Utwórz wykres słupkowy dla emocji w przypadku "COVID"
@@ -148,11 +163,20 @@ def war(path):
     fig.add_trace(bar_overall.data[0], row=2, col=1)
 
     # Zmień rozmiar obrazu na 1920x1080 pikseli
-    fig.update_layout(width=1920, height=1080)
+    fig.update_layout(width=1920, height=1080, title_font_size=100)
 
-    # Dostosuj tytuły osi
-    fig.update_xaxes(title_text="Emotions", row=2, col=1)
-    fig.update_yaxes(title_text="Count", row=2, col=1)
+    # Dostosuj tytuły osi i pogrubienie tekstu
+    fig.update_xaxes(title_text="Emotions", tickfont=dict(size=30))
+    fig.update_yaxes(title_text="Count", tickfont=dict(size=18))
+
+    # Dostosuj tytuły subplotów
+    fig.update_xaxes(title_text="Emotions", row=2, col=1, tickfont=dict(size=30))
+    fig.update_yaxes(title_text="Count", row=2, col=1, tickfont=dict(size=18))
+
+    # Dostosuj tytuły subplotów
+    fig.update_annotations(
+        font=dict(size=100), selector=dict(title="<b>Top 6 Emotions for War</b>")
+    )
 
     # Zapisz wykres jako plik JPG
     fig.write_image("emotions_chart_subplot_war.jpg", format="jpg")
